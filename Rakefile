@@ -11,7 +11,8 @@ begin
     gem.authors = ["Mike Ashmore"]
     gem.require_paths = ['lib']
     gem.autorequire = 'ruby_xbee'
-
+    gem.add_dependency 'ruby-serialport'
+  
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
