@@ -63,7 +63,7 @@ module XBee
     results.gsub!( "\r", "\n")
   end
 
-  class V1
+  class Base
     include XBee
     attr_accessor :xbee_serialport
 
@@ -93,6 +93,7 @@ module XBee
       @iotypes = { :Disabled => 0, :ADC => 2, :DI => 3, :DO_Low => 4, :DO_High => 5,
                    :Associated_Indicator => 1, :RTS => 1, :CTS => 1, :RS485_Low => 6, :RS485_High => 7 }
     end
+
 
 =begin rdoc
   Puts the XBee into AT command mode and insures that we can bring it to attention.
@@ -139,7 +140,6 @@ module XBee
    Signal strength (:DB) is reported in units of -dBM.
 =end rdoc
     def neighbors
-
       # neighbors often takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
       @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
@@ -319,7 +319,6 @@ module XBee
         response.strip.chomp
       end
     end
-
 =begin rdoc
   returns the PAN ID of the device.  PAN ID is one of the 3 main identifiers used to
   communicate with the device from other XBees.  All XBees which are meant to communicate
@@ -615,6 +614,10 @@ module XBee
     def getresponse( echo = false )
       getresults( @xbee_serialport, echo )
     end
+
+  end
+
+  class V1 < Base
 
   end  # class V1
 
