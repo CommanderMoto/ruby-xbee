@@ -9,6 +9,8 @@ begin
     gem.email = "mike@motomike.net"
     gem.homepage = "http://github.com/motomike/ruby-xbee"
     gem.authors = ["Mike Ashmore"]
+    gem.require_paths = ['lib']
+    gem.autorequire = 'ruby_xbee'
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

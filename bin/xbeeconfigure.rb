@@ -71,11 +71,12 @@
 # see Digi product manual: "Product Manual v1.xCx - 802.15.4 Protocol"
 # for details on the operation of XBee series 1 modules. 
 
-require File.join(File.dirname(File.dirname(__FILE__)), 'conf', 'xbeeconfig')
+$: << File.dirname(__FILE__)
+
 require 'date'
 require 'getoptlong'
 
-require 'xbee'
+require 'ruby-xbee'
 
 @xbee_config_version = "xbeeconfig 1.0"
 

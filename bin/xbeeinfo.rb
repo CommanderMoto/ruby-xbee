@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -rubygems
 # == Synopsis
 # xbeeinfo.rb - A Ruby utility for extracting XBee setup information using xbee ruby class (Ruby::XBee)
 #
@@ -68,10 +68,10 @@
 # for details on the operation of XBee series 1 modules. 
 
 
+$: << File.dirname(__FILE__)
+
 require 'date'
-require 'rubygems'
-require "ruby-serialport/SerialPort"
-#require 'SerialPort'
+require 'ruby-xbee'
 
 STDIN.sync = 1
 STDOUT.sync = 1
@@ -88,12 +88,11 @@ $stdout.sync = true
 # serial framing
 @data_bits = 8
 @stop_bits = 1
-@parity = SerialPort::NONE
+@parity = 0
 
-require 'xbee'
 require 'pp'
 
-@xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 puts "Attention: #{@xbee.attention}"
 puts "Firmware: #{@xbee.fw_rev}"

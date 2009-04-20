@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Ashmore"]
+  s.autorequire = %q{ruby_xbee}
   s.date = %q{2009-04-20}
   s.email = %q{mike@motomike.net}
   s.executables = ["xbeeconfigure.rb", "xbeedio.rb", "xbeeinfo.rb", "xbeelisten.rb", "xbeesend.rb"]
@@ -24,47 +25,7 @@ Gem::Specification.new do |s|
     "bin/xbeeinfo.rb",
     "bin/xbeelisten.rb",
     "bin/xbeesend.rb",
-    "lib/ruby-serialport-0.6-linux-i386/CHANGELOG",
-    "lib/ruby-serialport-0.6-linux-i386/MANIFEST",
-    "lib/ruby-serialport-0.6-linux-i386/Makefile",
-    "lib/ruby-serialport-0.6-linux-i386/README",
-    "lib/ruby-serialport-0.6-linux-i386/debian/changelog",
-    "lib/ruby-serialport-0.6-linux-i386/debian/control",
-    "lib/ruby-serialport-0.6-linux-i386/debian/copyright",
-    "lib/ruby-serialport-0.6-linux-i386/debian/rules",
-    "lib/ruby-serialport-0.6-linux-i386/extconf.rb",
-    "lib/ruby-serialport-0.6-linux-i386/mkmf.log",
-    "lib/ruby-serialport-0.6-linux-i386/serialport.c",
-    "lib/ruby-serialport-0.6-linux-i386/serialport.so",
-    "lib/ruby-serialport-0.6-linux-i386/test/miniterm.rb",
-    "lib/ruby-serialport-0.6-osx-intel/CHANGELOG",
-    "lib/ruby-serialport-0.6-osx-intel/MANIFEST",
-    "lib/ruby-serialport-0.6-osx-intel/Makefile",
-    "lib/ruby-serialport-0.6-osx-intel/README",
-    "lib/ruby-serialport-0.6-osx-intel/debian/changelog",
-    "lib/ruby-serialport-0.6-osx-intel/debian/control",
-    "lib/ruby-serialport-0.6-osx-intel/debian/copyright",
-    "lib/ruby-serialport-0.6-osx-intel/debian/rules",
-    "lib/ruby-serialport-0.6-osx-intel/extconf.rb",
-    "lib/ruby-serialport-0.6-osx-intel/mkmf.log",
-    "lib/ruby-serialport-0.6-osx-intel/serialport.bundle",
-    "lib/ruby-serialport-0.6-osx-intel/serialport.c",
-    "lib/ruby-serialport-0.6-osx-intel/test/miniterm.rb",
-    "lib/ruby-serialport-0.6-ppc/CHANGELOG",
-    "lib/ruby-serialport-0.6-ppc/MANIFEST",
-    "lib/ruby-serialport-0.6-ppc/Makefile",
-    "lib/ruby-serialport-0.6-ppc/README",
-    "lib/ruby-serialport-0.6-ppc/debian/changelog",
-    "lib/ruby-serialport-0.6-ppc/debian/control",
-    "lib/ruby-serialport-0.6-ppc/debian/copyright",
-    "lib/ruby-serialport-0.6-ppc/debian/rules",
-    "lib/ruby-serialport-0.6-ppc/extconf.rb",
-    "lib/ruby-serialport-0.6-ppc/mkmf.log",
-    "lib/ruby-serialport-0.6-ppc/serialport.bundle",
-    "lib/ruby-serialport-0.6-ppc/serialport.c",
-    "lib/ruby-serialport-0.6-ppc/test/miniterm.rb",
     "lib/ruby_xbee.rb",
-    "lib/xbee.rb",
     "test/ruby_xbee_test.rb",
     "test/test_helper.rb"
   ]

@@ -55,12 +55,13 @@
 # see Digi product manual: "Product Manual v1.xCx - 802.15.4 Protocol"
 # for details on the operation of XBee series 1 modules. 
 
+$: << File.dirname(__FILE__)
+
 require 'date'
-require File.join(File.dirname(File.dirname(__FILE__)), 'conf', 'xbeeconfig')
-require 'xbee'
+require 'ruby-xbee'
 require 'pp'
 
-@xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 puts "Attention: #{@xbee.attention}"
 

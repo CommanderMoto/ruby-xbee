@@ -48,11 +48,12 @@
 # IEEE® 802.15.4 OEM RF Modules by Digi International
 # 
 
-require File.join(File.dirname(File.dirname(__FILE__)), 'conf', 'xbeeconfig')
+$: << File.dirname(__FILE__)
+
 require 'date'
 require 'getoptlong'
 
-require 'xbee'
+require 'ruby-xbee'
 
 def dump_help
 

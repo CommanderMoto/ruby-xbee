@@ -57,11 +57,12 @@
 # for details on the operation of XBee series 1 modules. 
 # 
 
-require File.join(File.dirname(File.dirname(__FILE__)), 'conf', 'xbeeconfig')
+$: << File.dirname(__FILE__)
+
 require 'date'
 require 'getoptlong'
 
-require 'xbee'
+require 'ruby-xbee'
 
 # start a connection to the XBee
 @xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
