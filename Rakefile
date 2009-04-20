@@ -5,7 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "ruby-xbee"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{Ripped ruby-xbee-1.0 from http://sawdust.see-do.org/ruby-xbee/releases/ruby-xbee-1.0/ruby-xbee-1.0.tar.gz
+                     on 20 April 2009; heavy modifications underway to support V2 XBee Pro 900MHz modules and generally 
+                     clean up code}
     gem.email = "mike@motomike.net"
     gem.homepage = "http://github.com/motomike/ruby-xbee"
     gem.authors = ["Mike Ashmore"]
