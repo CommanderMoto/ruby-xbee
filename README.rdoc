@@ -1,0 +1,7 @@
+= ruby-xbee
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Mike Ashmore. See LICENSE for details.
