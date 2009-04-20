@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: RELEASE [xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host ]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>RELEASE</h1>
+        <div class='paths'>
+          RELEASE
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Fri Jan 02 20:35:41 -0700 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h2>Synopsis</h2>
+            <p>
+            Ruby::XBee - Configure and access <a href="../classes/XBee.html">XBee</a>
+            using Ruby
+            </p>
+            <p>
+            Current host platforms supported:
+            </p>
+            <pre>Linux (Intel)&#x000A;Mac OS X (PPC or Intel)</pre>
+            <p>
+            See <a href="README.html">README</a> for more information on configuration
+            and setup.
+            </p>
+            <h2>Copyright</h2>
+            <p>
+            Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+            </p>
+            <h2>License</h2>
+            <pre>This program is free software: you can redistribute it and/or modify&#x000A;it under the terms of the GNU Affero General Public License version 3 as&#x000A;published by the Free Software Foundation.&#x000A;&#x000A;This program is distributed in the hope that it will be useful,&#x000A;but WITHOUT ANY WARRANTY; without even the implied warranty of&#x000A;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#x000A;GNU Affero General Public License version 3 for more details.&#x000A;&#x000A;You should have received a copy of the GNU Affero General Public License along with this program.&#x000A;If not, see http://www.gnu.org/licenses/&#x000A;&#x000A;You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org</pre>
+            <h2>Release Notes</h2>
+            <p>
+            1/2/2009 Ruby::XBee Version 1.0
+            </p>
+            <ul>
+            <li><b>Prerequisites</b> - Ruby SerialPort
+            
+            </li>
+            </ul>
+            <p>
+            A platform-specific version of the Ruby SerialPort is a prerequisite for
+            Ruby::XBee
+            </p>
+            <p>
+            The Linux/Intel, Mac OSX PPC and Mac OSX Intel versions of Ruby SerialPort
+            are bundled in the Ruby::XBee package.
+            </p>
+            <p>
+            If needed for other platforms you can download Ruby SerialPort from: <a
+            href="http://rubyforge.org/projects/ruby-serialport">rubyforge.org/projects/ruby-serialport</a>/
+            and build from source.
+            </p>
+            <ul>
+            <li><b>Prerequisites</b> - Ruby 1.8.7
+            
+            </li>
+            </ul>
+            <p>
+            To date, all testing has been done using Ruby 1.8.7 (2008-8-11 patchlevel
+            72). No doubt, other versions of Ruby will work quite well, YMMV
+            </p>
+            <h2>Configuring Ruby SerialPort symlink</h2>
+            <p>
+            A symlink should be created to point to the correct platform of ruby
+            SerialPort.
+            </p>
+            <p>
+            For example, to run this on an Intel Mac, create a symlink to the intel mac
+            version of ruby SerialPort:
+            </p>
+            <pre>ln -s ruby-serial-port-0.6-osx-intel ruby-serialport-0.6</pre>
+            <p>
+            an ls -l should produce something like:
+            </p>
+            <pre>lrwxr-xr-x   1 lcox  lcox     29 Dec 31 16:22 ruby-serialport-0.6 -&gt; ruby-serialport-0.6-osx-intel&#x000A;drwxr-xr-x  14 lcox  lcox    476 Dec 27 22:09 ruby-serialport-0.6-linux-i386&#x000A;drwxr-xr-x  14 lcox  lcox    476 Jan  1 17:02 ruby-serialport-0.6-osx-intel&#x000A;drwxr-xr-x  15 lcox  lcox    510 Jan  1 17:07 ruby-serialport-0.6-ppc</pre>
+            <h2>TODO</h2>
+            <ul>
+            <li>need a volunteer to port Ruby::XBee to Windows - perhaps Cygwin or raw
+            Windows cmd
+            
+            </li>
+            <li>make Ruby::XBee into a gem
+            
+            </li>
+            <li>Write a ruby utility to flash <a href="../classes/XBee.html">XBee</a>
+            firmware in order to alleviate the need to use X-CTU for that chore
+            
+            </li>
+            <li>Support XBee&#8217;s API mode - lots of new work to be done - major nice
+            upgrade to get this in
+            
+            </li>
+            <li>Support other <a href="../classes/XBee.html">XBee</a> modules and firmware
+            (ZNet, ZigBee, DigiNet) - lots of new work to be done
+            
+            </li>
+            </ul>
+            <h2>Bugs</h2>
+            <p>
+            I&#8217;m sure there are bugs. Please test and submit a detailed report to
+            landon att 360vl com Better yet, please submit a patch for a fix. Thanks.
+            See <a href="http://sawdust.see-do.org">sawdust.see-do.org</a> for latest
+            versions as they become available.
+            </p>
+            <h2>Feature Requests</h2>
+            <p>
+            Check <a href="http://sawdust.see-do.org">sawdust.see-do.org</a> for
+            updates. Send feature requests to landon att 360vl com
+            </p>
+            <h2>Generating Ruby::XBee RDoc</h2>
+            <p>
+            Ruby::XBee uses RDoc and the Hanna template. To generate documentation
+            yourself, you need to do a one-time install of the hanna template and
+            dependencies:
+            </p>
+            <pre>sudo gem sources -a http://gems.github.com&#x000A;sudo gem install mislav-hanna</pre>
+            <p>
+            Then from within the ruby-xbee install directory run:
+            </p>
+            <pre>hanna -U -x ruby-serialport-0.6 -x doc -x license</pre>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

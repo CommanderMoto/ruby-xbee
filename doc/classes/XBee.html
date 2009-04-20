@@ -1,0 +1,943 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Class: XBee [xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host ]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>Class</span>
+          XBee
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a href="../files/xbee_rb.html">xbee.rb</a>
+          </li>
+        </ol>
+        <div class='parent'>
+          Parent:
+          <strong>Object</strong>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public class</h3>
+            <ol>
+              <li><a href="#M000043">getresults</a></li>
+              <li><a href="#M000006">new</a></li>
+            </ol>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000007">attention</a></li>
+              <li><a href="#M000026">baud</a></li>
+              <li><a href="#M000027">baud!</a></li>
+              <li><a href="#M000019">channel</a></li>
+              <li><a href="#M000020">channel!</a></li>
+              <li><a href="#M000015">destination_high</a></li>
+              <li><a href="#M000016">destination_high!</a></li>
+              <li><a href="#M000013">destination_low</a></li>
+              <li><a href="#M000014">destination_low!</a></li>
+              <li><a href="#M000030">dio</a></li>
+              <li><a href="#M000031">dio!</a></li>
+              <li><a href="#M000032">dio_change_detect</a></li>
+              <li><a href="#M000033">dio_change_detect!</a></li>
+              <li><a href="#M000040">exit_command_mode</a></li>
+              <li><a href="#M000008">fw_rev</a></li>
+              <li><a href="#M000042">getresponse</a></li>
+              <li><a href="#M000009">hw_rev</a></li>
+              <li><a href="#M000035">io_input</a></li>
+              <li><a href="#M000034">io_output!</a></li>
+              <li><a href="#M000011">my_src_address</a></li>
+              <li><a href="#M000012">my_src_address!</a></li>
+              <li><a href="#M000010">neighbors</a></li>
+              <li><a href="#M000021">node_id</a></li>
+              <li><a href="#M000022">node_id!</a></li>
+              <li><a href="#M000023">pan_id</a></li>
+              <li><a href="#M000024">pan_id!</a></li>
+              <li><a href="#M000028">parity</a></li>
+              <li><a href="#M000029">parity!</a></li>
+              <li><a href="#M000025">received_signal_strength</a></li>
+              <li><a href="#M000037">reset!</a></li>
+              <li><a href="#M000038">restore!</a></li>
+              <li><a href="#M000036">save!</a></li>
+              <li><a href="#M000039">send!</a></li>
+              <li><a href="#M000018">serial_num_high</a></li>
+              <li><a href="#M000017">serial_num_low</a></li>
+              <li><a href="#M000041">version</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='constants-list'>
+              <h2>Constants</h2>
+              <div class='name-list'>
+                <table summary='Constants'>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>TYPICAL_READ_TIMEOUT</td>
+                    <td>=</td>
+                    <td class='context-item-value'>1200</td>
+                    <td>&nbsp;</td>
+                    <td class='context-item-desc'>
+                      
+                      <a href="XBee.html">XBee</a> response times vary based on both hardware and
+                      firmware versions. These constants may need to be adjusted for your
+                      devices, but these will work fine for most cases. The unit of time for a
+                      timeout constant is ms
+                    </td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>LONG_READ_TIMEOUT</td>
+                    <td>=</td>
+                    <td class='context-item-value'>3000</td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>VERSION</td>
+                    <td>=</td>
+                    <td class='context-item-value'>&quot;1.0&quot;</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id='attribute-list'>
+              <h2 class='section-bar'>Attributes</h2>
+              <div class='name-list'>
+                <table>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>xbee</td>
+                    <td class='context-item-value'>[RW]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id='methods'>
+              <h2>Public class methods</h2>
+              <div class='public-class method' id='method-M000043'>
+                <a name='M000043'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>getresults</span>
+                  <span class='arguments'>( sp, echo = true )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  a class method for getting results from any Ruby SerialPort object
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000043-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000043-source'><span class="ruby-comment cmt"># File xbee.rb, line 597</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">getresults</span>( <span class="ruby-identifier">sp</span>, <span class="ruby-identifier">echo</span> = <span class="ruby-keyword kw">true</span> )&#x000A;    <span class="ruby-identifier">results</span> = <span class="ruby-value str">&quot;&quot;</span>&#x000A;    <span class="ruby-keyword kw">while</span> (<span class="ruby-identifier">c</span> = <span class="ruby-identifier">sp</span>.<span class="ruby-identifier">getc</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-keyword kw">if</span> ( <span class="ruby-operator">!</span><span class="ruby-identifier">echo</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">echo</span> )&#x000A;        <span class="ruby-identifier">putc</span> <span class="ruby-identifier">c</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">results</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;#{c.chr}&quot;</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;    <span class="ruby-comment cmt"># deal with multiple lines</span>&#x000A;    <span class="ruby-identifier">results</span>.<span class="ruby-identifier">gsub!</span>( <span class="ruby-value str">&quot;\r&quot;</span>, <span class="ruby-value str">&quot;\n&quot;</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-class method' id='method-M000006'>
+                <a name='M000006'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>new</span>
+                  <span class='arguments'>( xbee_usbdev_str, baud, data_bits, stop_bits, parity )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  initializes the communication link with the <a href="XBee.html">XBee</a>
+                  device. These parameters must match those which are configured in the <a
+                  href="XBee.html">XBee</a> in order to establish communication.
+                  </p>
+                  <p>
+                  xbee_usbdev_str is a path to the device used to communicate with the <a
+                  href="XBee.html">XBee</a>. Typically it may look like:
+                  /dev/tty.usbserial-A80081sF if you&#8217;re using a USB to serial converter
+                  or a device such as <a
+                  href="http://www.sparkfun.com/commerce/product_info.php?products_id=8687">www.sparkfun.com/commerce/product_info.php?products_id=8687</a>
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000006-source'><span class="ruby-comment cmt"># File xbee.rb, line 55</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">xbee_usbdev_str</span>, <span class="ruby-identifier">baud</span>, <span class="ruby-identifier">data_bits</span>, <span class="ruby-identifier">stop_bits</span>, <span class="ruby-identifier">parity</span> )&#x000A;    <span class="ruby-comment cmt"># open serial port device to XBee</span>&#x000A;    <span class="ruby-ivar">@xbee</span> = <span class="ruby-constant">SerialPort</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">xbee_usbdev_str</span>, <span class="ruby-identifier">baud</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">data_bits</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">stop_bits</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">parity</span> )&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">TYPICAL_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@baudcodes</span> = { <span class="ruby-value">1200</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>, <span class="ruby-value">2400</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-value">4800</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-value">9600</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">3</span>, <span class="ruby-value">19200</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">4</span>, <span class="ruby-value">38400</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">5</span>, <span class="ruby-value">57600</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">6</span>, <span class="ruby-value">115200</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">7</span> }&#x000A;    <span class="ruby-ivar">@paritycodes</span> = { <span class="ruby-identifier">:None</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>, <span class="ruby-identifier">:Even</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">:Odd</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-identifier">:Mark</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">3</span>, <span class="ruby-identifier">:Space</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">4</span> }&#x000A;    <span class="ruby-ivar">@iotypes</span> = { <span class="ruby-identifier">:Disabled</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>, <span class="ruby-identifier">:ADC</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">2</span>, <span class="ruby-identifier">:DI</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">3</span>, <span class="ruby-identifier">:DO_Low</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">4</span>, <span class="ruby-identifier">:DO_High</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">5</span>, &#x000A;                 <span class="ruby-identifier">:Associated_Indicator</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">:RTS</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">:CTS</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">:RS485_Low</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">6</span>, <span class="ruby-identifier">:RS485_High</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">7</span> }&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <h2>Public instance methods</h2>
+              <div class='public-instance method' id='method-M000007'>
+                <a name='M000007'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>attention</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Puts the <a href="XBee.html">XBee</a> into AT command mode and insures that
+                  we can bring it to attention. The expected return value is &#8220;OK&#8220;
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000007-source'><span class="ruby-comment cmt"># File xbee.rb, line 69</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">attention</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;+++&quot;</span>)  &#x000A;    <span class="ruby-identifier">sleep</span> <span class="ruby-value">1</span> &#x000A;    <span class="ruby-identifier">getresponse</span>   <span class="ruby-comment cmt"># flush up to +++ response if needed</span>&#x000A;    <span class="ruby-comment cmt"># if XBee is already in command mode, there will be no response, so make an explicit</span>&#x000A;    <span class="ruby-comment cmt"># AT call to insure an OK response</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;AT\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span>().<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000026'>
+                <a name='M000026'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>baud</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  retrieves the baud rate of the device. Generally, this will be the same as
+                  the rate you&#8217;re currently using to talk to the device unless
+                  you&#8217;ve changed the device&#8217;s baud rate and are still in the AT
+                  command mode and/or have not exited command mode explicitly for the new
+                  baud rate to take effect.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000026-source'><span class="ruby-comment cmt"># File xbee.rb, line 336</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">baud</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATBD\r&quot;</span>)&#x000A;    <span class="ruby-identifier">baudcode</span> = <span class="ruby-identifier">getresponse</span> &#x000A;    <span class="ruby-ivar">@baudcodes</span>.<span class="ruby-identifier">index</span>( <span class="ruby-identifier">baudcode</span>.<span class="ruby-identifier">to_i</span> )&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000027'>
+                <a name='M000027'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>baud!</span>
+                  <span class='arguments'>( baud_rate )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the given baud rate into the <a href="XBee.html">XBee</a> device. The
+                  baud change will not take effect until the AT command mode times out or the
+                  exit command mode command is given. acceptable baud rates are: 1200, 2400,
+                  4800, 9600, 19200, 38400, 57600, 115200 end
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000027-source'><span class="ruby-comment cmt"># File xbee.rb, line 349</span>&#x000A; <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">baud!</span>( <span class="ruby-identifier">baud_rate</span> )  &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATBD#{@baudcodes[baud_rate]}&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A; <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000019'>
+                <a name='M000019'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>channel</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the channel number of the <a href="XBee.html">XBee</a> device. this
+                  value, along with the PAN ID, and MY address determines the addressability
+                  of the device and what it can listen to
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000019-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000019-source'><span class="ruby-comment cmt"># File xbee.rb, line 236</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">channel</span>&#x000A;    <span class="ruby-comment cmt"># channel often takes more than 1000ms to return data</span>&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATCH\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000020'>
+                <a name='M000020'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>channel!</span>
+                  <span class='arguments'>(new_channel)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the channel number of the device. The valid channel numbers are those
+                  of the 802.15.4 standard.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000020-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000020-source'><span class="ruby-comment cmt"># File xbee.rb, line 249</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">channel!</span>(<span class="ruby-identifier">new_channel</span>)&#x000A;    <span class="ruby-comment cmt"># channel takes more than 1000ms to return data</span>&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATCH#{new_channel}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000015'>
+                <a name='M000015'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>destination_high</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the high portion of the <a href="XBee.html">XBee</a> device&#8217;s
+                  current destination address
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000015-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000015-source'><span class="ruby-comment cmt"># File xbee.rb, line 203</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destination_high</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATDH\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000016'>
+                <a name='M000016'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>destination_high!</span>
+                  <span class='arguments'>(high_addr)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the high portion of the <a href="XBee.html">XBee</a> device&#8217;s
+                  current destination address
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000016-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000016-source'><span class="ruby-comment cmt"># File xbee.rb, line 211</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destination_high!</span>(<span class="ruby-identifier">high_addr</span>)&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATDH#{high_addr}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000013'>
+                <a name='M000013'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>destination_low</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the low portion of the <a href="XBee.html">XBee</a> device&#8217;s
+                  current destination address
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000013-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000013-source'><span class="ruby-comment cmt"># File xbee.rb, line 187</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destination_low</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATDL\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000014'>
+                <a name='M000014'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>destination_low!</span>
+                  <span class='arguments'>(low_addr)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the low portion of the <a href="XBee.html">XBee</a> device&#8217;s
+                  destination address
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000014-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000014-source'><span class="ruby-comment cmt"># File xbee.rb, line 195</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destination_low!</span>(<span class="ruby-identifier">low_addr</span>)&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATDL#{low_addr}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000030'>
+                <a name='M000030'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>dio</span>
+                  <span class='arguments'>( port )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  reads an i/o port configuration on the <a href="XBee.html">XBee</a> for
+                  analog to digital or digital input or output (GPIO)
+                  </p>
+                  <p>
+                  this method returns an I/O type symbol of:
+                  </p>
+                  <pre>:Disabled&#x000A;:ADC&#x000A;:DI&#x000A;:DO_Low&#x000A;:DO_High&#x000A;:Associated_Indicator&#x000A;:RTS&#x000A;:CTS&#x000A;:RS485_Low&#x000A;:RS485_High</pre>
+                  <p>
+                  Not all DIO ports are capable of every configuration listed above. This
+                  method will properly translate the XBee&#8217;s response value to the
+                  symbol above when the same value has different meanings from port to port.
+                  </p>
+                  <p>
+                  The port parameter may be any symbol :D0 through :D8 representing the 8 I/O
+                  ports on an <a href="XBee.html">XBee</a>
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000030-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000030-source'><span class="ruby-comment cmt"># File xbee.rb, line 409</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dio</span>( <span class="ruby-identifier">port</span> )&#x000A;    <span class="ruby-identifier">at</span> = <span class="ruby-node">&quot;AT#{port.to_s}\r&quot;</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>( <span class="ruby-identifier">at</span> )&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>.<span class="ruby-identifier">to_i</span>&#x000A;&#x000A;    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">response</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>  <span class="ruby-comment cmt"># the value of 1 is overloaded based on port number</span>&#x000A;      <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">port</span> &#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:D5</span> &#x000A;        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:Associated_Indicator</span>&#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:D6</span>&#x000A;        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:RTS</span>&#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:D7</span>&#x000A;        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">:CTS</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">else</span>&#x000A;      <span class="ruby-ivar">@iotypes</span>.<span class="ruby-identifier">index</span>(<span class="ruby-identifier">response</span>)&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000031'>
+                <a name='M000031'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>dio!</span>
+                  <span class='arguments'>( port, iotype )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  configures an i/o port on the <a href="XBee.html">XBee</a> for analog to
+                  digital or digital input or output (GPIO)
+                  </p>
+                  <p>
+                  port parameter valid values are the symbols :D0 through :D8
+                  </p>
+                  <p>
+                  iotype parameter valid values are symbols:
+                  </p>
+                  <pre>:Disabled&#x000A;:ADC&#x000A;:DI&#x000A;:DO_Low&#x000A;:DO_High&#x000A;:Associated_Indicator&#x000A;:RTS&#x000A;:CTS&#x000A;:RS485_Low&#x000A;:RS485_High</pre>
+                  <p>
+                  note: not all iotypes are compatible with every port type, see the <a
+                  href="XBee.html">XBee</a> manual for exceptions and semantics
+                  </p>
+                  <p>
+                  note: it is critical you have upgraded firmware in your <a
+                  href="XBee.html">XBee</a> or DIO ports 0-4 cannot be read
+                  </p>
+                  <pre>(ie: ATD0 will return ERROR - this is an XBee firmware bug that's fixed in revs later than 1083)</pre>
+                  <p>
+                  note: tested with rev 10CD, fails with rev 1083
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000031-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000031-source'><span class="ruby-comment cmt"># File xbee.rb, line 454</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dio!</span>( <span class="ruby-identifier">port</span>, <span class="ruby-identifier">iotype</span> )&#x000A;    <span class="ruby-identifier">at</span> = <span class="ruby-node">&quot;AT#{port.to_s}#{@iotypes[iotype]}&quot;</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>( <span class="ruby-identifier">at</span> )&#x000A;    <span class="ruby-identifier">getresponse</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000032'>
+                <a name='M000032'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>dio_change_detect</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  reads the bitfield values for change detect monitoring. returns a bitmask
+                  indicating which DIO lines, 0-7 are enabled or disabled for change detect
+                  monitoring
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000032-source'><span class="ruby-comment cmt"># File xbee.rb, line 464</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dio_change_detect</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATIC\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000033'>
+                <a name='M000033'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>dio_change_detect!</span>
+                  <span class='arguments'>( hexbitmap )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the bitfield values for change detect monitoring. The hexbitmap
+                  parameter is a bitmap which enables or disables the change detect
+                  monitoring for any of the DIO ports 0-7
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000033-source'><span class="ruby-comment cmt"># File xbee.rb, line 473</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dio_change_detect!</span>( <span class="ruby-identifier">hexbitmap</span> )&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATIC#{hexbitmask}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000040'>
+                <a name='M000040'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>exit_command_mode</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  exits the AT command mode - all changed parameters will take effect such as
+                  baud rate changes after the exit is complete. <a
+                  href="XBee.html#M000040">exit_command_mode</a> does not permanently save
+                  the parameter changes when it exits AT command mode. In order to
+                  permanently change parameters, use the save! method
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000040-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000040-source'><span class="ruby-comment cmt"># File xbee.rb, line 575</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exit_command_mode</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATCN\r&quot;</span>) &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000008'>
+                <a name='M000008'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>fw_rev</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Retrieve <a href="XBee.html">XBee</a> firmware version
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000008-source'><span class="ruby-comment cmt"># File xbee.rb, line 83</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fw_rev</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATVR\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000042'>
+                <a name='M000042'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>getresponse</span>
+                  <span class='arguments'>( echo = false )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns results from the <a href="XBee.html">XBee</a> echo is disabled by
+                  default
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000042-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000042-source'><span class="ruby-comment cmt"># File xbee.rb, line 590</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getresponse</span>( <span class="ruby-identifier">echo</span> = <span class="ruby-keyword kw">false</span> )&#x000A;    <span class="ruby-constant">XBee</span>.<span class="ruby-identifier">getresults</span>( <span class="ruby-ivar">@xbee</span>, <span class="ruby-identifier">echo</span> )&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000009'>
+                <a name='M000009'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>hw_rev</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Retrieve <a href="XBee.html">XBee</a> hardware version
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000009-source'><span class="ruby-comment cmt"># File xbee.rb, line 93</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hw_rev</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATHV\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000035'>
+                <a name='M000035'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>io_input</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Forces a sampling of all DIO pins configured for input via dio! Returns a
+                  hash with the following key/value pairs: :NUM => number of samples :CM =>
+                  channel mask :DIO => dio data if DIO lines are enabled :ADCn => adc sample
+                  data (one for each ADC channel enabled)
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000035-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000035-source'><span class="ruby-comment cmt"># File xbee.rb, line 496</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">io_input</span>&#x000A;&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATIS\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>&#x000A;    <span class="ruby-identifier">linenum</span> = <span class="ruby-value">1</span>&#x000A;    <span class="ruby-identifier">adc_sample</span> = <span class="ruby-value">1</span>&#x000A;    <span class="ruby-identifier">samples</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>&#x000A;&#x000A;    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">response</span>.<span class="ruby-identifier">match</span>(<span class="ruby-value str">&quot;ERROR&quot;</span>) &#x000A;      <span class="ruby-identifier">samples</span>[<span class="ruby-identifier">:ERROR</span>] = <span class="ruby-value str">&quot;ERROR&quot;</span>&#x000A;      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">samples</span>  &#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;    <span class="ruby-comment cmt"># otherwise parse input data</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">each_line</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">|</span>&#x000A;      <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">linenum</span> &#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-identifier">samples</span>[<span class="ruby-identifier">:NUM</span>] = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">to_i</span> &#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-value">2</span>&#x000A;        <span class="ruby-identifier">samples</span>[<span class="ruby-identifier">:CM</span>] = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;      <span class="ruby-keyword kw">when</span> <span class="ruby-value">3</span>&#x000A;        <span class="ruby-identifier">samples</span>[<span class="ruby-identifier">:DIO</span>] = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">sample</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;        <span class="ruby-keyword kw">if</span> ( <span class="ruby-operator">!</span><span class="ruby-identifier">sample</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sample</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> )&#x000A;          <span class="ruby-identifier">samples</span>[<span class="ruby-node">&quot;ADC#{adc_sample}&quot;</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;          <span class="ruby-identifier">adc_sample</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;      <span class="ruby-identifier">linenum</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-identifier">samples</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000034'>
+                <a name='M000034'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>io_output!</span>
+                  <span class='arguments'>( hexbitmap )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Sets the digital output levels of any DIO lines which were configured for
+                  output using the dio! method. The parameter, hexbitmap, is a hex value
+                  which represents the 8-bit bitmap of the i/o lines on the <a
+                  href="XBee.html">XBee</a>.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000034-source'><span class="ruby-comment cmt"># File xbee.rb, line 483</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">io_output!</span>( <span class="ruby-identifier">hexbitmap</span> )&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATIO#{hexbitmap}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000011'>
+                <a name='M000011'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>my_src_address</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the source address of the <a href="XBee.html">XBee</a> device - the
+                  MY address value
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000011-source'><span class="ruby-comment cmt"># File xbee.rb, line 169</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">my_src_address</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATMY\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000012'>
+                <a name='M000012'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>my_src_address!</span>
+                  <span class='arguments'>(new_addr)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the 16-bit source address of the <a href="XBee.html">XBee</a> device.
+                  The parameter should be a 16-bit hex value. The factory default is 0. By
+                  setting the MY src address to 0xffff, 16-bit addressing is disabled and the
+                  <a href="XBee.html">XBee</a> will not listen for packets with 16-bit
+                  address fields
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000012-source'><span class="ruby-comment cmt"># File xbee.rb, line 179</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">my_src_address!</span>(<span class="ruby-identifier">new_addr</span>)&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATMY#{new_addr}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000010'>
+                <a name='M000010'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>neighbors</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Neighbor node discovery. Returns an array of hashes each element of the
+                  array contains a hash each hash contains keys: :MY, :SH, :SL, :DB, :NI
+                  representing addresses source address, Serial High, Serial Low, Received
+                  signal strength, node identifier respectively. Aan example of the results
+                  returned (hash as seen by pp):
+                  </p>
+                  <pre>[{:NI=&gt;&quot; &quot;, :MY=&gt;&quot;0&quot;, :SH=&gt;&quot;13A200&quot;, :SL=&gt;&quot;4008A642&quot;, :DB=&gt;-24},&#x000A; {:NI=&gt;&quot; &quot;, :MY=&gt;&quot;0&quot;, :SH=&gt;&quot;13A200&quot;, :SL=&gt;&quot;4008A697&quot;, :DB=&gt;-33},&#x000A; {:NI=&gt;&quot; &quot;, :MY=&gt;&quot;0&quot;, :SH=&gt;&quot;13A200&quot;, :SL=&gt;&quot;40085AD5&quot;, :DB=&gt;-52}]</pre>
+                  <p>
+                  Signal strength (:DB) is reported in units of -dBM.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000010-source'><span class="ruby-comment cmt"># File xbee.rb, line 112</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">neighbors</span>&#x000A;&#x000A;    <span class="ruby-comment cmt"># neighbors often takes more than 1000ms to return data</span>&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATND\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>  &#x000A;&#x000A;    <span class="ruby-comment cmt"># parse nodes and stuff an array of hashes</span>&#x000A;    <span class="ruby-ivar">@neighbors</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">linetype</span> = <span class="ruby-value">0</span>&#x000A;    <span class="ruby-identifier">neighbor</span> = <span class="ruby-value">0</span>&#x000A;&#x000A;    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">response</span>.<span class="ruby-identifier">nil?</span>&#x000A;      <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@neighbors</span>   <span class="ruby-comment cmt"># return an empty array</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">each_line</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">|</span>&#x000A;     &#x000A;      <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp!</span>&#x000A;&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>  &#x000A;        <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">linetype</span>&#x000A;        <span class="ruby-keyword kw">when</span> <span class="ruby-value">0</span>    <span class="ruby-comment cmt"># MY</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ] = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ].<span class="ruby-identifier">store</span>( <span class="ruby-identifier">:MY</span>, <span class="ruby-identifier">line</span> )&#x000A;&#x000A;        <span class="ruby-keyword kw">when</span> <span class="ruby-value">1</span>    <span class="ruby-comment cmt"># SH</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ].<span class="ruby-identifier">store</span>( <span class="ruby-identifier">:SH</span>, <span class="ruby-identifier">line</span> )&#x000A;&#x000A;        <span class="ruby-keyword kw">when</span> <span class="ruby-value">2</span>    <span class="ruby-comment cmt"># SL</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ].<span class="ruby-identifier">store</span>( <span class="ruby-identifier">:SL</span>, <span class="ruby-identifier">line</span> )&#x000A;&#x000A;        <span class="ruby-keyword kw">when</span> <span class="ruby-value">3</span>    <span class="ruby-comment cmt"># DB</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ].<span class="ruby-identifier">store</span>( <span class="ruby-identifier">:DB</span>, <span class="ruby-operator">-</span>(<span class="ruby-identifier">line</span>.<span class="ruby-identifier">hex</span>) )&#x000A;&#x000A;        <span class="ruby-keyword kw">when</span> <span class="ruby-value">4</span>    <span class="ruby-comment cmt"># NI</span>&#x000A;            <span class="ruby-ivar">@neighbors</span>[ <span class="ruby-identifier">neighbor</span> ].<span class="ruby-identifier">store</span>( <span class="ruby-identifier">:NI</span>, <span class="ruby-identifier">line</span> )&#x000A;&#x000A;            <span class="ruby-identifier">neighbor</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">linetype</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>&#x000A;          <span class="ruby-identifier">linetype</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-identifier">linetype</span> = <span class="ruby-value">0</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-ivar">@neighbors</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000021'>
+                <a name='M000021'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>node_id</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the node ID of the device. Node ID is typically a human-meaningful
+                  name to give to the <a href="XBee.html">XBee</a> device, much like a
+                  hostname.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000021-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000021-source'><span class="ruby-comment cmt"># File xbee.rb, line 263</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">node_id</span>&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATNI\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">response</span>.<span class="ruby-identifier">nil?</span> )&#x000A;      <span class="ruby-keyword kw">return</span> <span class="ruby-value str">&quot;&quot;</span>&#x000A;    <span class="ruby-keyword kw">else</span> &#x000A;      <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000022'>
+                <a name='M000022'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>node_id!</span>
+                  <span class='arguments'>(new_id)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the node ID to a user-definable text string to make it easier to
+                  identify the device with &#8220;human&#8221; names. This node id is
+                  reported to neighboring XBees so consider it &#8220;public&#8221;.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000022-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000022-source'><span class="ruby-comment cmt"># File xbee.rb, line 281</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">node_id!</span>(<span class="ruby-identifier">new_id</span>)&#x000A;    <span class="ruby-identifier">tmp</span> = <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-constant">LONG_READ_TIMEOUT</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATNI#{new_id}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span> &#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">read_timeout</span> = <span class="ruby-identifier">tmp</span>&#x000A;    <span class="ruby-keyword kw">if</span> ( <span class="ruby-identifier">response</span>.<span class="ruby-identifier">nil?</span> )&#x000A;      <span class="ruby-keyword kw">return</span> <span class="ruby-value str">&quot;&quot;</span>&#x000A;    <span class="ruby-keyword kw">else</span> &#x000A;      <span class="ruby-identifier">response</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000023'>
+                <a name='M000023'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>pan_id</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the PAN ID of the device. PAN ID is one of the 3 main identifiers
+                  used to communicate with the device from other XBees. All XBees which are
+                  meant to communicate must have the same PAN ID and channel number. The 3rd
+                  identifier is the address of the device itself represented by its serial
+                  number (High and Low) and/or it&#8217;s 16-bit MY source address.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000023-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000023-source'><span class="ruby-comment cmt"># File xbee.rb, line 301</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pan_id</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATID\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000024'>
+                <a name='M000024'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>pan_id!</span>
+                  <span class='arguments'>(new_id)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the PAN ID of the device. Modules must have the same PAN ID in order
+                  to communicate with each other. The PAN ID value can range from 0 - 0xffff.
+                  The default from the factory is set to 0x3332.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000024-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000024-source'><span class="ruby-comment cmt"># File xbee.rb, line 311</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pan_id!</span>(<span class="ruby-identifier">new_id</span>)&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATID#{new_id}\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000028'>
+                <a name='M000028'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>parity</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the parity of the device as represented by a symbol: :None - for
+                  8-bit none :Even - for 8-bit even :Odd - for 8-bit odd :Mark - for 8-bit
+                  mark :Space - for 8-bit space
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000028-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000028-source'><span class="ruby-comment cmt"># File xbee.rb, line 363</span>&#x000A; <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parity</span> &#x000A;   <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATNB\r&quot;</span>)&#x000A;   <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>().<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span>&#x000A;   <span class="ruby-ivar">@paritycodes</span>.<span class="ruby-identifier">index</span>( <span class="ruby-identifier">response</span>.<span class="ruby-identifier">to_i</span> )&#x000A; <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000029'>
+                <a name='M000029'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>parity!</span>
+                  <span class='arguments'>( parity_type )</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  sets the parity of the device to one represented by a symbol contained in
+                  the parity_type parameter
+                  </p>
+                  <pre>:None - for 8-bit none&#x000A;:Even - for 8-bit even&#x000A;:Odd  - for 8-bit odd&#x000A;:Mark - for 8-bit mark&#x000A;:Space - for 8-bit space</pre>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000029-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000029-source'><span class="ruby-comment cmt"># File xbee.rb, line 378</span>&#x000A; <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parity!</span>( <span class="ruby-identifier">parity_type</span> )&#x000A;   <span class="ruby-comment cmt"># validate symbol before writing parity param</span>&#x000A;   <span class="ruby-keyword kw">if</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@paritycodes</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">parity_type</span>) &#x000A;     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>&#x000A;   <span class="ruby-keyword kw">end</span>  &#x000A;   <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;ATNB#{@paritycodes[parity_type]}&quot;</span>)&#x000A;   <span class="ruby-identifier">getresponse</span> &#x000A; <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000025'>
+                <a name='M000025'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>received_signal_strength</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the signal strength in dBm units of the last received packet.
+                  Expect a negative integer or 0 to be returned. If the <a
+                  href="XBee.html">XBee</a> device has not received any neighboring packet
+                  data, the signal strength value will be 0
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000025-source'><span class="ruby-comment cmt"># File xbee.rb, line 321</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">received_signal_strength</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATDB\r&quot;</span>)&#x000A;    <span class="ruby-identifier">response</span> = <span class="ruby-identifier">getresponse</span>().<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">chomp</span> &#x000A;    <span class="ruby-comment cmt"># this response is an absolute hex value which is in -dBm</span>&#x000A;    <span class="ruby-comment cmt"># modify this so it returns actual - dBm value</span>&#x000A;    <span class="ruby-identifier">dbm</span> = <span class="ruby-operator">-</span>(<span class="ruby-identifier">response</span>.<span class="ruby-identifier">hex</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000037'>
+                <a name='M000037'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>reset!</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  resets the <a href="XBee.html">XBee</a> module through software and
+                  simulates a power off/on. Any configuration changes that have not been
+                  saved with the save! method will be lost during reset.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000037-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000037-source'><span class="ruby-comment cmt"># File xbee.rb, line 549</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset!</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATFR\r&quot;</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000038'>
+                <a name='M000038'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>restore!</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Restores all the module parameters to factory defaults
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000038-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000038-source'><span class="ruby-comment cmt"># File xbee.rb, line 556</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">restore!</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATRE\r&quot;</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000036'>
+                <a name='M000036'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>save!</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  writes the current <a href="XBee.html">XBee</a> configuration to the <a
+                  href="XBee.html">XBee</a> device&#8217;s flash. There is no undo for this
+                  operation
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000036-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000036-source'><span class="ruby-comment cmt"># File xbee.rb, line 540</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">save!</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATWR\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000039'>
+                <a name='M000039'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>send!</span>
+                  <span class='arguments'>(message)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  just a straight pass through of data to the <a href="XBee.html">XBee</a>.
+                  This can be used to send data when not in AT command mode, or if you want
+                  to control the <a href="XBee.html">XBee</a> with raw commands, you can send
+                  them this way.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000039-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000039-source'><span class="ruby-comment cmt"># File xbee.rb, line 565</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">send!</span>(<span class="ruby-identifier">message</span>)&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>( <span class="ruby-identifier">message</span> )&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000018'>
+                <a name='M000018'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>serial_num_high</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the high portion of the <a href="XBee.html">XBee</a> devices serial
+                  number. this value is factory set.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000018-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000018-source'><span class="ruby-comment cmt"># File xbee.rb, line 227</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serial_num_high</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATSH\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000017'>
+                <a name='M000017'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>serial_num_low</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the low portion of the <a href="XBee.html">XBee</a> device&#8217;s
+                  serial number. this value is factory set.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000017-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000017-source'><span class="ruby-comment cmt"># File xbee.rb, line 219</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serial_num_low</span>&#x000A;    <span class="ruby-ivar">@xbee</span>.<span class="ruby-identifier">write</span>(<span class="ruby-value str">&quot;ATSL\r&quot;</span>)&#x000A;    <span class="ruby-identifier">getresponse</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000041'>
+                <a name='M000041'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>version</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  returns the version of this class
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000041-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000041-source'><span class="ruby-comment cmt"># File xbee.rb, line 582</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">version</span>&#x000A;    <span class="ruby-constant">VERSION</span> &#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

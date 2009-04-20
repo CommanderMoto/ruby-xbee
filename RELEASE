@@ -1,0 +1,90 @@
+== Synopsis
+Ruby::XBee - Configure and access XBee using Ruby
+
+Current host platforms supported:
+  Linux (Intel)
+  Mac OS X (PPC or Intel) 
+
+See README for more information on configuration and setup.
+
+== Copyright
+
+Copyright (C) 2008-2009 360VL, Inc. and Landon Cox 
+ 
+== License
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3 as
+ published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License along with this program.
+ If not, see http://www.gnu.org/licenses/
+
+ You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org
+
+== Release Notes
+1/2/2009 Ruby::XBee Version 1.0 
+
+* *Prerequisites* - Ruby SerialPort
+A platform-specific version of the Ruby SerialPort is a prerequisite for Ruby::XBee
+
+The Linux/Intel, Mac OSX PPC and Mac OSX Intel versions of Ruby SerialPort are 
+bundled in the Ruby::XBee package.
+
+If needed for other platforms you can download Ruby SerialPort from:
+http://rubyforge.org/projects/ruby-serialport/
+and build from source.
+
+* *Prerequisites* - Ruby 1.8.7
+To date, all testing has been done using Ruby 1.8.7 (2008-8-11 patchlevel 72).  
+No doubt, other versions of Ruby will work quite well, YMMV
+
+== Configuring Ruby SerialPort symlink
+
+A symlink should be created to point to the correct platform of ruby SerialPort.
+
+For example, to run this on an Intel Mac, create a symlink to the intel mac version of 
+ruby SerialPort:
+
+  ln -s ruby-serial-port-0.6-osx-intel ruby-serialport-0.6
+
+an ls -l should produce something like:
+
+  lrwxr-xr-x   1 lcox  lcox     29 Dec 31 16:22 ruby-serialport-0.6 -> ruby-serialport-0.6-osx-intel
+  drwxr-xr-x  14 lcox  lcox    476 Dec 27 22:09 ruby-serialport-0.6-linux-i386
+  drwxr-xr-x  14 lcox  lcox    476 Jan  1 17:02 ruby-serialport-0.6-osx-intel
+  drwxr-xr-x  15 lcox  lcox    510 Jan  1 17:07 ruby-serialport-0.6-ppc
+
+== TODO
+* need a volunteer to port Ruby::XBee to Windows - perhaps Cygwin or raw Windows cmd
+* make Ruby::XBee into a gem
+* Write a ruby utility to flash XBee firmware in order to alleviate the need to use X-CTU for that chore 
+* Support XBee's API mode  - lots of new work to be done - major nice upgrade to get this in
+* Support other XBee modules and firmware (ZNet, ZigBee, DigiNet) - lots of new work to be done
+
+== Bugs
+I'm sure there are bugs.  Please test and submit a detailed report to landon att 360vl com
+Better yet, please submit a patch for a fix.  Thanks.
+See http://sawdust.see-do.org for latest versions as they become available.
+
+== Feature Requests
+
+Check http://sawdust.see-do.org for updates.
+Send feature requests to landon att 360vl com 
+
+== Generating Ruby::XBee RDoc 
+
+Ruby::XBee uses RDoc and the Hanna template.  To generate documentation yourself, you need
+to do a one-time install of the hanna template and dependencies:
+
+    sudo gem sources -a http://gems.github.com
+    sudo gem install mislav-hanna
+
+Then from within the ruby-xbee install directory run:
+
+    hanna -U -x ruby-serialport-0.6 -x doc -x license
+

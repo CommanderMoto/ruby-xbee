@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: makerelease [xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host ]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>makerelease</h1>
+        <div class='paths'>
+          makerelease
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Sat Jan 03 07:07:54 -0700 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <p>
+            #!/bin/bash
+            </p>
+            <p>
+            RELEASE=ruby-xbee-1.0
+            </p>
+            <p>
+            pushd . mkdir -p releases/$<a href="RELEASE.html">RELEASE</a> rm -rf
+            releases/tmp mkdir -p releases/tmp/$<a href="RELEASE.html">RELEASE</a> cp
+            -vr { <a href="README.html">README</a> <a href="RELEASE.html">RELEASE</a>
+            conf doc license ruby-serialport-0.6-linux-i386
+            ruby-serialport-0.6-osx-intel ruby-serialport-0.6-ppc <a
+            href="xbee_rb.html">xbee.rb</a> <a
+            href="xbeeconfigure_rb.html">xbeeconfigure.rb</a> <a
+            href="xbeedio_rb.html">xbeedio.rb</a> <a
+            href="xbeeinfo_rb.html">xbeeinfo.rb</a> <a
+            href="xbeelisten_rb.html">xbeelisten.rb</a> <a
+            href="xbeesend_rb.html">xbeesend.rb</a> } releases/tmp/$<a
+            href="RELEASE.html">RELEASE</a> echo DONE WITH COPY cd releases/tmp/$<a
+            href="RELEASE.html">RELEASE</a>
+            </p>
+            <p>
+            echo REMOVING .svn artifacts from pwd find . -name &#8220;.svn&#8221; -exec
+            rm -rf {} ; cd .. pwd echo creating TARBALL tar cvfz
+            ../../releases/$RELEASE/$RELEASE.tar.gz $<a href="RELEASE.html">RELEASE</a>
+            md5 ../../releases/$RELEASE/$RELEASE.tar.gz popd
+            </p>
+            <p>
+            # clean up tmp directory rm -rf releases/tmp
+            </p>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

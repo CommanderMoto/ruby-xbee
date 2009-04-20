@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: README [xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host ]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>README</h1>
+        <div class='paths'>
+          README
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Sat Jan 03 10:51:44 -0700 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h2>Ruby::XBee - What is it?</h2>
+            <p>
+            Ruby::XBee lets you configure and access Digi <a
+            href="../classes/XBee.html">XBee</a> RF devices using ruby classes and
+            ruby-based command line utilities.
+            </p>
+            <p>
+            Current host platforms supported:
+            </p>
+            <ul>
+            <li>Linux (Intel)
+            
+            </li>
+            <li>Mac OS X (PPC or Intel)
+            
+            </li>
+            </ul>
+            <h2>What is an <a href="../classes/XBee.html">XBee</a>?</h2>
+            <p>
+            <a href="../classes/XBee.html">XBee</a> devices are handy, low-cost RF data
+            radios often used in embedded applications for communicating with
+            microcontrollers and sensors. The distance an <a
+            href="../classes/XBee.html">XBee</a> covers ranges from a few hundred feet
+            to 15 miles line of sight depending upon the <a
+            href="../classes/XBee.html">XBee</a> device type, frequency, antenna type,
+            and power ratings.
+            </p>
+            <p>
+            Some XBees can be configured to support the ZigBee standard. Other XBees
+            support various forms of proprietary mesh networking especially suited to
+            scaling sensor networks.
+            </p>
+            <p>
+            To learn more about Digi&#8217;s <a href="../classes/XBee.html">XBee</a>
+            modules, see Digi&#8217;s web site at: <a
+            href="http://www.digi.com/products/embeddedsolutions/zigbeesolutions/">www.digi.com/products/embeddedsolutions/zigbeesolutions/</a>
+            </p>
+            <h2>Why use Ruby::XBee?</h2>
+            <ul>
+            <li>Ruby::XBee is a convenient way to script the configuration of <a
+            href="../classes/XBee.html">XBee</a> especially if you have a lot of XBees
+            to program.
+            
+            </li>
+            <li>Ruby::XBee lends itself to building command line applications and deploying
+            <a href="../classes/XBee.html">XBee</a> networks.
+            
+            </li>
+            <li>Ruby::XBee is a quick way to experiment with functionality of XBees.
+            
+            </li>
+            <li>Ruby::XBee can alleviate the need to memorize lots of AT modem commands and
+            their parameters.
+            
+            </li>
+            <li>Since Digi has no configuration host support for Linux or OS X, if these
+            are your native or preferred environments, Ruby::XBee may be for you.
+            
+            </li>
+            <li>Ruby::XBee is open source and contributions are welcome. See <a
+            href="RELEASE.html">RELEASE</a> notes TODO section for areas of solicited
+            contributions.
+            
+            </li>
+            </ul>
+            <p>
+            If you&#8217;d like to contact the author, see <a
+            href="http://sawdust.see-do.org/businesscard/businesscard.html">sawdust.see-do.org/businesscard/businesscard.html</a>
+            </p>
+            <h2>Ruby::XBee Documentation</h2>
+            <p>
+            See doc/index.html from the downloaded bundle for detailed documentation on
+            Ruby <a href="../classes/XBee.html">XBee</a> class and utilities. This
+            documentation is primarily RDoc generated from the actual code, so it
+            should be complete and accurate. If documentation mistakes are found,
+            please report errors to landon att 360vl com.
+            </p>
+            <p>
+            Not all of the many <a href="../classes/XBee.html">XBee</a> features are
+            supported by Ruby::XBee, but many of the most common ones are. New features
+            will be supported as this software evolves. Complete <a
+            href="../classes/XBee.html">XBee</a> feature coverage represents a main
+            project goal and is a significant area of solicited contributions.
+            </p>
+            <p>
+            Example use of the core <a href="../classes/XBee.html">XBee</a> ruby class
+            can be found in the utilities themselves: <a
+            href="xbeeinfo_rb.html">xbeeinfo.rb</a>, <a
+            href="xbeeconfigure_rb.html">xbeeconfigure.rb</a>, <a
+            href="xbeedio_rb.html">xbeedio.rb</a>, <a
+            href="xbeelisten_rb.html">xbeelisten.rb</a>, <a
+            href="xbeesend_rb.html">xbeesend.rb</a>
+            </p>
+            <p>
+            Additional examples may be posted on <a
+            href="http://sawdust.see-do.org">sawdust.see-do.org</a> as time goes on.
+            </p>
+            <h2>Quick Start</h2>
+            <ol>
+            <li>install ruby 1.8.7 for your platform (see <a
+            href="http://www.ruby-lang.org">www.ruby-lang.org</a>)
+            
+            </li>
+            <li>download the ruby-xbee tarball ( <a
+            href="http://sawdust.see-do.org/ruby-xbee/ruby-xbee-downloads.html">sawdust.see-do.org/ruby-xbee/ruby-xbee-downloads.html</a>
+            )
+            
+            </li>
+            <li>tar extract the bundle into its permanent directory
+            
+            </li>
+            <li>make a symlink for serial-port-0.6
+            
+            </li>
+            <li>determine your /dev string and configure that in config/xbeeconfig.rb
+            
+            </li>
+            <li>try ./xbeeinfo.rb
+            
+            </li>
+            </ol>
+            <h2>Detailed Quick Start</h2>
+            <h3>tar extract the bundle into the directory where you want to use the package.</h3>
+            <p>
+            There is no &#8220;system&#8221; installation required. All dependencies
+            are bundled with the package. All files are contained under the directory
+            where the package is extracted.
+            </p>
+            <pre>tar xvfz ruby-xbee-&lt;version&gt;.tar.gz</pre>
+            <p>
+            where <version> is the latest ruby-xbee version you downloaded.
+            </p>
+            <h3>Make a symlink for serial-port-0.6 to your platform&#8217;s ruby serial port implementation</h3>
+            <p>
+            Inside the directory *ruby-xbee-<version>*, a symlink should be created to
+            point to the correct platform of ruby SerialPort.
+            </p>
+            <p>
+            For example, to run this on an Intel Mac, create a symlink to the Intel Mac
+            version of ruby SerialPort:
+            </p>
+            <pre>ln -s ruby-serial-port-0.6-osx-intel ruby-serialport-0.6</pre>
+            <p>
+            ls -l should produce something like:
+            </p>
+            <pre>lrwxr-xr-x   1 lcox  lcox     29 Dec 31 16:22 ruby-serialport-0.6 -&gt; ruby-serialport-0.6-osx-intel&#x000A;drwxr-xr-x  14 lcox  lcox    476 Dec 27 22:09 ruby-serialport-0.6-linux-i386&#x000A;drwxr-xr-x  14 lcox  lcox    476 Jan  1 17:02 ruby-serialport-0.6-osx-intel&#x000A;drwxr-xr-x  15 lcox  lcox    510 Jan  1 17:07 ruby-serialport-0.6-ppc</pre>
+            <h3>Determine your /dev string and configure that in config/xbeeconfig.rb</h3>
+            <p>
+            When you plug in your <a href="../classes/XBee.html">XBee</a> using an USB
+            explorer board such as the Sparkfun <a href="../classes/XBee.html">XBee</a>
+            explorer:
+            </p>
+            <p>
+            <a
+            href="http://www.sparkfun.com/commerce/product_info.php?products_id=8687">www.sparkfun.com/commerce/product_info.php?products_id=8687</a>
+            </p>
+            <p>
+            a new device will appear in the /dev directory of your Mac or Linux
+            machine. As a hint, look for a device such as /dev/tty.usb* or /dev/ttyUSB*
+            </p>
+            <p>
+            If you use the Sparkfun <a href="../classes/XBee.html">XBee</a> explorer
+            board mentioned above as an example, you will see a device such as:
+            </p>
+            <pre>ls -l /dev/tty.usbserial*-&#x000A;crw-rw-rw-  1 root  wheel   10,  14 Jan  2 11:03 /dev/tty.usbserial-A80081sF</pre>
+            <p>
+            Each USB device has a unique tag so your device will not be named exactly
+            the same as this example.
+            </p>
+            <p>
+            Once you determine the device name, edit the ruby-xbee/conf/xbeeconfig.rb
+            file and modify the @xbee_usbdev_str to match your device. Example:
+            </p>
+            <pre>@xbee_usbdev_str = &quot;/dev/tty.usbserial-A80081sF&quot;</pre>
+            <p>
+            save the xbeeconfig.rb file.
+            </p>
+            <h3>Try ./xbeeinfo.rb</h3>
+            <p>
+            Insure that <a href="xbeeinfo_rb.html">xbeeinfo.rb</a> has its execute
+            permissions set:
+            </p>
+            <pre>chmod a+x xbeeinfo.rb</pre>
+            <p>
+            Insure your <a href="../classes/XBee.html">XBee</a> device is plugged into
+            your host and the device is enumerated in /dev according to Step 3 above.
+            </p>
+            <pre>./xbeeinfo.rb</pre>
+            <p>
+            If everything&#8217;s configured correctly you will see output from
+            xbeeinfo similar to this (your output will vary):
+            </p>
+            <pre>cooper:ruby-xbee lcox$ ./xbeeinfo.rb&#x000A;Attention: OK&#x000A;Firmware: 10CD&#x000A;Hardware: 180B&#x000A;Baud: 9600&#x000A;Parity: None&#x000A;Neighbors:&#x000A;[{:NI=&gt;&quot;BMW528&quot;, :MY=&gt;&quot;2&quot;, :SH=&gt;&quot;13A200&quot;, :SL=&gt;&quot;4008A642&quot;, :DB=&gt;-36}]&#x000A;Node ID: BaseStation&#x000A;Channel: C&#x000A;PAN ID: 1&#x000A;MY: 1&#x000A;SH: 13A200&#x000A;SL: 4008A64E&#x000A;DH: 0&#x000A;DL: 2&#x000A;Last received signal strength (dBm): -36&#x000A;Port 0: Disabled&#x000A;Port 1: DI&#x000A;Port 2: Disabled&#x000A;Port 3: Disabled&#x000A;Port 4: Disabled&#x000A;Port 5: Associated_Indicator&#x000A;Port 6: Disabled&#x000A;Port 7: CTS&#x000A;Port 8: Disabled</pre>
+            <p>
+            Running ./xbeeinfo.rb relies on your ruby being in the path for env to
+            find:
+            </p>
+            <pre>#!/usr/bin/env ruby</pre>
+            <p>
+            Alternatively, you can run any of these utilities by invoking them directly
+            with your environment&#8217;s ruby from the shell. Examples:
+            </p>
+            <pre>ruby xbeeinfo.rb</pre>
+            <p>
+            or use an explicit path to a specific version of ruby on your system as in
+            this example:
+            </p>
+            <pre>/usr/local/bin/ruby xbeeinfo.rb</pre>
+            <h2>Troubleshooting</h2>
+            <p>
+            <a href="../classes/XBee.html">XBee</a> won&#8217;t respond:
+            </p>
+            <ul>
+            <li>Refer to: <a
+            href="http://www.faludi.com/projects/common-xbee-mistakes">www.faludi.com/projects/common-xbee-mistakes</a>/
+            
+            </li>
+            <li>Insure your <a href="../classes/XBee.html">XBee</a> has the latest firmware
+            flashed into the device (use Digi X-CTU)
+            
+            </li>
+            <li>Insure your device&#8217;s USB driver is enumerated in the /dev directory
+            when you plug in USB
+            
+            </li>
+            <li>Insure your <a href="../classes/XBee.html">XBee</a> device and Ruby::XBee
+            baud rate configuration is identical
+            
+            </li>
+            <li>Digi&#8217;s <a href="../classes/XBee.html">XBee</a> development boards do
+            not have USB drivers for OS X or Linux. I recommend using SparkFun USB <a
+            href="../classes/XBee.html">XBee</a> Explorer board: <a
+            href="http://www.sparkfun.com/commerce/product_info.php?products_id=8687">www.sparkfun.com/commerce/product_info.php?products_id=8687</a>
+            This board supports drivers that are compatible with OS X and Linux
+            operating systems. This board can be used with Digi&#8217;s X-CTU windows
+            configuration utility as well, so it&#8217;s a great board to have if
+            you&#8217;re working with <a href="../classes/XBee.html">XBee</a> on
+            various platforms.
+            
+            </li>
+            <li>Insure your full device path is configured in <a
+            href="conf/xbeeconfig_rb.html">conf/xbeeconfig.rb</a>
+            
+            </li>
+            <li>Insure you can &#8220;talk&#8221; to your device with Digi X-CTU on Windows
+            
+            <ul>
+            <li>make sure the device itself can be contacted before trying again with
+            Ruby::XBee
+            
+            </li>
+            </ul>
+            </li>
+            <li>Try the Linux or OS X &#8216;screen&#8217; command to contact the device:
+            
+            <pre>screen /dev/tty.usbserial-A80081sF 9600</pre>
+            <p>
+            where you would replace the /dev/ string in the example above with the one
+            for your USB <a href="../classes/XBee.html">XBee</a> device. When you plug
+            in a USB serial device, Linux and OS X will enumerate that device
+            automatically by adding a new entry into the /dev directory.
+            </p>
+            </li>
+            <li>When you make contact with the device using &#8216;screen&#8217;, issue a
+            +++ and wait for a second or two for an OK response
+            
+            </li>
+            <li>Contact Digi. See: <a
+            href="http://www.digi.com/support/productdetl.jsp?pid=3265&osvid=0&s=270&tp=4">www.digi.com/support/productdetl.jsp?pid=3265&osvid=0&s=270&tp=4</a>
+            
+            </li>
+            </ul>
+            <p>
+            Other than these suggestions, sorry, I have no time to support connectivity
+            problems to the <a href="../classes/XBee.html">XBee</a> itself. Google is
+            your friend.
+            </p>
+            <h2>Limitations</h2>
+            <ul>
+            <li>Not all <a href="../classes/XBee.html">XBee</a> Series 1 features are
+            supported, though many are.
+            
+            </li>
+            <li>No provision is made to flash new device firmware into the <a
+            href="../classes/XBee.html">XBee</a> from Ruby::XBee classes or utilities.
+            
+            </li>
+            </ul>
+            <p>
+            Reflashing firmware requires using Digi&#8217;s X-CTU windows program. Code
+            contributions in this area are welcome.
+            </p>
+            <h2>See Also</h2>
+            <p>
+            There are several other utilties included with Ruby::XBee. See also:
+            </p>
+            <ul>
+            <li><a href="xbeedio_rb.html">xbeedio.rb</a> - A Ruby utility for configuring
+            and manipulating <a href="../classes/XBee.html">XBee</a> DIO ports
+            
+            </li>
+            <li><a href="xbeeinfo_rb.html">xbeeinfo.rb</a> - A Ruby utility for extracting
+            <a href="../classes/XBee.html">XBee</a> setup information using xbee ruby
+            class (Ruby::XBee)
+            
+            </li>
+            <li><a href="xbeelisten_rb.html">xbeelisten.rb</a> - A ruby utility for
+            listening to data output from an <a href="../classes/XBee.html">XBee</a>
+            
+            </li>
+            <li><a href="xbeesend_rb.html">xbeesend.rb</a> - A ruby utility for sending raw
+            data to and through an <a href="../classes/XBee.html">XBee</a>
+            
+            </li>
+            </ul>
+            <p>
+            As time, inclination and contributions strike, then more functionality to
+            come.
+            </p>
+            <p>
+            Check <a href="http://sawdust.see-do.org/">sawdust.see-do.org/</a> for
+            future updates.
+            </p>
+            <h2>Copyright</h2>
+            <p>
+            Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+            </p>
+            <h2>License</h2>
+            <p>
+            This program is free software: you can redistribute it and/or modify it
+            under the terms of the GNU Affero General Public License version 3 as
+            published by the Free Software Foundation.
+            </p>
+            <p>
+            This program is distributed in the hope that it will be useful, but WITHOUT
+            ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+            FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+            version 3 for more details.
+            </p>
+            <p>
+            You should have received a copy of the GNU Affero General Public License
+            along with this program. If not, see <a
+            href="http://www.gnu.org/licenses/">www.gnu.org/licenses/</a>
+            </p>
+            <h2>Learn More</h2>
+            <p>
+            You can learn more about Ruby::XBee and other projects at <a
+            href="http://sawdust.see-do.org">sawdust.see-do.org</a>
+            </p>
+            <h2>Contact and Contribute</h2>
+            <p>
+            If you&#8217;d like to contribute code, examples, or documentation to the
+            Ruby::XBee project, contact Landon Cox <a
+            href="http://sawdust.see-do.org/businesscard/businesscard.html">sawdust.see-do.org/businesscard/businesscard.html</a>
+            </p>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

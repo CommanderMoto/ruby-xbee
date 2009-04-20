@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: xbeelisten.rb [xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host ]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='.././rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>xbeelisten.rb</h1>
+        <div class='paths'>
+          xbeelisten.rb
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Fri Jan 02 13:27:12 -0700 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h2>Synposis</h2>
+            <p>
+            <a href="xbeelisten_rb.html">xbeelisten.rb</a> - A ruby utility for
+            listening to data output from an <a href="../classes/XBee.html">XBee</a>
+            </p>
+            <h2>Copyright</h2>
+            <p>
+            Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+            </p>
+            <h2>License</h2>
+            <p>
+            This program is free software: you can redistribute it and/or modify it
+            under the terms of the GNU Affero General Public License version 3 as
+            published by the Free Software Foundation.
+            </p>
+            <p>
+            This program is distributed in the hope that it will be useful, but WITHOUT
+            ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+            FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+            version 3 for more details.
+            </p>
+            <p>
+            You should have received a copy of the GNU Affero General Public License
+            along with this program. If not, see <a
+            href="http://www.gnu.org/licenses/">www.gnu.org/licenses/</a>
+            </p>
+            <p>
+            You can learn more about ruby for <a href="../classes/XBee.html">XBee</a>
+            and other projects at <a
+            href="http://sawdust.see-do.org">sawdust.see-do.org</a>
+            </p>
+            <h2>Usage</h2>
+            <pre>./xbeelisten.rb</pre>
+            <p>
+            Example output from xbeelisten...this example is an <a
+            href="../classes/XBee.html">XBee</a> listening to a Sparkfun USB Weather
+            board which is transmitting data through a 2nd XBee:
+            </p>
+            <pre>cooper:ruby-xbee lcox$ ./xbeelisten.rb&#x000A;#10.75,069.47,020.9,069.62,079038,612,050580$&#x000A;#10.22,070.46,021.5,070.70,078998,613,052232$&#x000A;#10.22,070.44,021.6,070.88,078993,613,052233$</pre>
+            <p>
+            See <a href="conf/xbeeconfig_rb.html">conf/xbeeconfig.rb</a> for
+            configuration defaults
+            </p>
+            <h2>See Also</h2>
+            <p>
+            <a href="xbeeinfo_rb.html">xbeeinfo.rb</a>, <a
+            href="xbeeconfigure_rb.html">xbeeconfigure.rb</a>, <a
+            href="xbeedio_rb.html">xbeedio.rb</a>, <a
+            href="xbeelisten_rb.html">xbeelisten.rb</a>, <a
+            href="xbeesend_rb.html">xbeesend.rb</a>
+            </p>
+            <h2>Learn more</h2>
+            <p>
+            You can learn more about Ruby::XBee and other projects at <a
+            href="http://sawdust.see-do.org">sawdust.see-do.org</a>
+            </p>
+            <p>
+            see Digi product manual: &#8220;Product Manual v1.xCx - 802.15.4
+            Protocol&#8221; for details on the operation of <a
+            href="../classes/XBee.html">XBee</a> series 1 modules.
+            </p>
+            <p>
+            this code is for the following <a href="../classes/XBee.html">XBee</a>
+            modules: IEEE® 802.15.4 OEM RF Modules by Digi International
+            </p>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000005">dump_help</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+            <div id='requires'>
+              <h2>Required files</h2>
+              <ol>
+                <li>date</li>
+                <li>getoptlong</li>
+                <li><a href="xbee_rb.html">xbee</a></li>
+              </ol>
+            </div>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public instance methods</h2>
+              <div class='public-instance method' id='method-M000005'>
+                <a name='M000005'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>dump_help</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000005-source'><span class="ruby-comment cmt"># File xbeelisten.rb, line 57</span>&#x000A;<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dump_help</span>&#x000A;&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;xbeelisten.rb [options]&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Options:&quot;</span>&#x000A;&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;   [--dev device] [-d device]                use this device to talk to XBee (ie: /dev/tty.usb-791jdas)&quot;</span>   &#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;   [--baud new_baud_rate] [-b new_baud_rate] sets the baud rate with which to talk to the device&quot;</span>    <span class="ruby-comment cmt"># override baud </span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;   [--help] print this command help message&quot;</span>&#x000A;&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;\nSee conf/config.rb for defaults and edit conf/config.rb to change the defaults used to communicate with the device&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;License: GNU Affero General Public License version 3&quot;</span> &#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Copyright (C) 2008-2009 360VL, Inc&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Copyright (C) 2008-2009 Landon Cox&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

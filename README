@@ -1,0 +1,223 @@
+== Ruby::XBee - What is it?
+Ruby::XBee lets you configure and access Digi XBee RF devices using ruby classes and ruby-based 
+command line utilities.
+
+Current host platforms supported:
+* Linux (Intel)
+* Mac OS X (PPC or Intel)
+
+== What is an XBee?
+XBee devices are handy, low-cost RF data radios often used in embedded applications for 
+communicating with microcontrollers and sensors.  The distance an XBee covers ranges from a 
+few hundred feet to 15 miles line of sight depending upon the XBee device type, frequency, 
+antenna type, and power ratings.
+
+Some XBees can be configured to support the ZigBee standard.  Other XBees support
+various forms of proprietary mesh networking especially suited to scaling sensor networks.
+
+To learn more about Digi's XBee modules, see Digi's web site at:
+http://www.digi.com/products/embeddedsolutions/zigbeesolutions/
+
+== Why use Ruby::XBee?
+
+* Ruby::XBee is a convenient way to script the configuration of XBee especially if you have a lot of XBees to program. 
+* Ruby::XBee lends itself to building command line applications and deploying XBee networks.
+* Ruby::XBee is a quick way to experiment with functionality of XBees.
+* Ruby::XBee can alleviate the need to memorize lots of AT modem commands and their parameters.
+* Since Digi has no configuration host support for Linux or OS X, if these are your native or preferred environments, Ruby::XBee may be for you.
+* Ruby::XBee is open source and contributions are welcome.  See RELEASE notes TODO section for areas of solicited contributions. 
+
+If you'd like to contact the author, see http://sawdust.see-do.org/businesscard/businesscard.html 
+
+== Ruby::XBee Documentation
+
+See doc/index.html from the downloaded bundle for detailed documentation on Ruby XBee class and utilities.
+This documentation is primarily RDoc generated from the actual code, so it should be complete and accurate.
+If documentation mistakes are found, please report errors to landon att 360vl com.
+
+Not all of the many XBee features are supported by Ruby::XBee, but many of the most common ones are.  New features
+will be supported as this software evolves.  Complete XBee feature coverage represents a main project goal and is
+a significant area of solicited contributions.
+
+Example use of the core XBee ruby class can be found in the utilities themselves:
+xbeeinfo.rb, xbeeconfigure.rb, xbeedio.rb, xbeelisten.rb, xbeesend.rb
+
+Additional examples may be posted on http://sawdust.see-do.org as time goes on.
+
+== Quick Start
+0. install ruby 1.8.7 for your platform (see http://www.ruby-lang.org)
+1. download the ruby-xbee tarball ( http://sawdust.see-do.org/ruby-xbee/ruby-xbee-downloads.html )
+2. tar extract the bundle into its permanent directory
+3. make a symlink for serial-port-0.6
+4. determine your /dev string and configure that in config/xbeeconfig.rb
+5. try ./xbeeinfo.rb
+
+== Detailed Quick Start
+=== tar extract the bundle into the directory where you want to use the package.  
+
+There is no "system" installation required.  All dependencies are bundled with the package.  All files are 
+contained under the directory where the package is extracted.
+
+   tar xvfz ruby-xbee-<version>.tar.gz
+
+where <version> is the latest ruby-xbee version you downloaded.
+
+=== Make a symlink for serial-port-0.6 to your platform's ruby serial port implementation
+
+Inside the directory *ruby-xbee-<version>*, a symlink should be created to point to the correct platform of ruby SerialPort.
+
+For example, to run this on an Intel Mac, create a symlink to the Intel Mac version of 
+ruby SerialPort:
+
+  ln -s ruby-serial-port-0.6-osx-intel ruby-serialport-0.6
+
+ls -l should produce something like:
+
+  lrwxr-xr-x   1 lcox  lcox     29 Dec 31 16:22 ruby-serialport-0.6 -> ruby-serialport-0.6-osx-intel
+  drwxr-xr-x  14 lcox  lcox    476 Dec 27 22:09 ruby-serialport-0.6-linux-i386
+  drwxr-xr-x  14 lcox  lcox    476 Jan  1 17:02 ruby-serialport-0.6-osx-intel
+  drwxr-xr-x  15 lcox  lcox    510 Jan  1 17:07 ruby-serialport-0.6-ppc
+
+=== Determine your /dev string and configure that in config/xbeeconfig.rb
+
+When you plug in your XBee using an USB explorer board such as the Sparkfun XBee explorer:
+
+http://www.sparkfun.com/commerce/product_info.php?products_id=8687
+
+a new device will appear in the /dev directory of your Mac or Linux machine.  As a hint,
+look for a device such as /dev/tty.usb* or /dev/ttyUSB*
+
+If you use the Sparkfun XBee explorer board mentioned above as an example, you will see 
+a device such as:  
+
+  ls -l /dev/tty.usbserial*- 
+  crw-rw-rw-  1 root  wheel   10,  14 Jan  2 11:03 /dev/tty.usbserial-A80081sF
+
+Each USB device has a unique tag so your device will not be named exactly the same as
+this example.
+
+Once you determine the device name, edit the ruby-xbee/conf/xbeeconfig.rb file and 
+modify the @xbee_usbdev_str to match your device.  Example:
+
+  @xbee_usbdev_str = "/dev/tty.usbserial-A80081sF" 
+
+save the xbeeconfig.rb file.
+
+=== Try ./xbeeinfo.rb
+
+Insure that xbeeinfo.rb has its execute permissions set:
+
+  chmod a+x xbeeinfo.rb
+
+Insure your XBee device is plugged into your host and the device is enumerated
+in /dev according to Step 3 above.
+
+  ./xbeeinfo.rb
+
+If everything's configured correctly you will see output from xbeeinfo similar to 
+this (your output will vary):
+
+  cooper:ruby-xbee lcox$ ./xbeeinfo.rb 
+  Attention: OK
+  Firmware: 10CD
+  Hardware: 180B
+  Baud: 9600
+  Parity: None
+  Neighbors:
+  [{:NI=>"BMW528", :MY=>"2", :SH=>"13A200", :SL=>"4008A642", :DB=>-36}]
+  Node ID: BaseStation
+  Channel: C
+  PAN ID: 1
+  MY: 1
+  SH: 13A200
+  SL: 4008A64E
+  DH: 0
+  DL: 2
+  Last received signal strength (dBm): -36
+  Port 0: Disabled
+  Port 1: DI
+  Port 2: Disabled
+  Port 3: Disabled
+  Port 4: Disabled
+  Port 5: Associated_Indicator
+  Port 6: Disabled
+  Port 7: CTS
+  Port 8: Disabled
+
+Running ./xbeeinfo.rb relies on your ruby being in the path for env to find:
+
+  #!/usr/bin/env ruby
+
+Alternatively, you can run any of these utilities by invoking them directly with your environment's
+ruby from the shell.  Examples:
+
+  ruby xbeeinfo.rb
+or use an explicit path to a specific version of ruby on your system as in this example:
+  /usr/local/bin/ruby xbeeinfo.rb
+
+== Troubleshooting
+
+XBee won't respond:
+* Refer to:  http://www.faludi.com/projects/common-xbee-mistakes/
+* Insure your XBee has the latest firmware flashed into the device (use Digi X-CTU)
+* Insure your device's USB driver is enumerated in the /dev directory when you plug in USB
+* Insure your XBee device and Ruby::XBee baud rate configuration is identical
+* Digi's XBee development boards do not have USB drivers for OS X or Linux.
+  I recommend using SparkFun USB XBee Explorer board: http://www.sparkfun.com/commerce/product_info.php?products_id=8687
+  This board supports drivers that are compatible with OS X and Linux operating systems.  This board
+  can be used with Digi's X-CTU windows configuration utility as well, so it's a great board to have
+  if you're working with XBee on various platforms.
+* Insure your full device path is configured in conf/xbeeconfig.rb
+* Insure you can "talk" to your device with Digi X-CTU on Windows
+  - make sure the device itself can be contacted before trying again with Ruby::XBee
+* Try the Linux or OS X 'screen' command to contact the device:
+    screen /dev/tty.usbserial-A80081sF 9600
+  where you would replace the /dev/ string in the example above with the one for your USB XBee device.
+  When you plug in a USB serial device, Linux and OS X will enumerate that device automatically by adding
+  a new entry into the /dev directory.  
+* When you make contact with the device using 'screen', issue a +++ and wait for a second or two for an OK response
+* Contact Digi. See: http://www.digi.com/support/productdetl.jsp?pid=3265&osvid=0&s=270&tp=4
+
+Other than these suggestions, sorry, I have no time to support connectivity problems to the XBee itself.  
+Google is your friend.
+
+== Limitations
+* Not all XBee Series 1 features are supported, though many are.
+* No provision is made to flash new device firmware into the XBee from Ruby::XBee classes or utilities.
+Reflashing firmware requires using Digi's X-CTU windows program.  Code contributions in this area are welcome.
+
+== See Also
+There are several other utilties included with Ruby::XBee.  See also:
+
+* xbeedio.rb - A Ruby utility for configuring and manipulating XBee DIO ports
+* xbeeinfo.rb - A Ruby utility for extracting XBee setup information using xbee ruby class (Ruby::XBee)
+* xbeelisten.rb - A ruby utility for listening to data output from an XBee
+* xbeesend.rb - A ruby utility for sending raw data to and through an XBee
+
+As time, inclination and contributions strike, then more functionality to come.  
+
+Check http://sawdust.see-do.org/ for future updates.
+
+== Copyright
+Copyright (C) 2008-2009 360VL, Inc. and Landon Cox 
+
+== License
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+GNU Affero General Public License version 3 for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program.
+If not, see http://www.gnu.org/licenses/
+
+== Learn More
+You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org
+
+== Contact and Contribute
+If you'd like to contribute code, examples, or documentation to the Ruby::XBee project, contact
+Landon Cox http://sawdust.see-do.org/businesscard/businesscard.html
+
