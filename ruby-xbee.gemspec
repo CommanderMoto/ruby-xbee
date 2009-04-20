@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.autorequire = %q{ruby_xbee}
   s.date = %q{2009-04-20}
   s.email = %q{mike@motomike.net}
-  s.executables = ["xbeeconfigure.rb", "xbeedio.rb", "xbeeinfo.rb", "xbeelisten.rb", "xbeesend.rb"]
+  s.executables = ["ruby-xbee.rb", "xbeeconfigure.rb", "xbeedio.rb", "xbeeinfo.rb", "xbeelisten.rb", "xbeesend.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
     "README",
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION.yml",
+    "bin/ruby-xbee.rb",
     "bin/xbeeconfigure.rb",
     "bin/xbeedio.rb",
     "bin/xbeeinfo.rb",
@@ -45,8 +46,11 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<ruby-serialport>, [">= 0"])
     else
+      s.add_dependency(%q<ruby-serialport>, [">= 0"])
     end
   else
+    s.add_dependency(%q<ruby-serialport>, [">= 0"])
   end
 end
