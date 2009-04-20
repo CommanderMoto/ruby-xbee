@@ -104,7 +104,7 @@ options.each do | opt, arg |
 end
 
 # start a connection to the XBee
-@xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 # read XBee output forever
 while( 1 )

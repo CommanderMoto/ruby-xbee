@@ -197,7 +197,7 @@ end
 def execute_configuration
   # start the configuration 
 
-  @xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+  @xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
   # before doing anything else, put XBee into AT command mode
 
