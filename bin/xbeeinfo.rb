@@ -78,9 +78,11 @@ STDOUT.sync = 1
 $stdin.sync = true
 $stdout.sync = true
 
-#@xbee_usbdev_str = "/dev/tty.usbserial-A7004nmf"
-@xbee_usbdev_str = "/dev/tty.usbserial-FTE4UXEA"
+if ARGV[0] && ARGV[0].to_s.downcase == "cable"
+  @xbee_usbdev_str = "/dev/tty.usbserial-FTE4UXEA"
+end
 
+@xbee_usbdev_str ||= "/dev/tty.usbserial-A7004nmf"
 
 # default baud - this can be overridden on the command line
 @xbee_baud = 9600
