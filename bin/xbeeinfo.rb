@@ -73,25 +73,6 @@ $: << File.dirname(__FILE__)
 require 'date'
 require 'ruby-xbee'
 
-STDIN.sync = 1
-STDOUT.sync = 1
-$stdin.sync = true
-$stdout.sync = true
-
-if ARGV[0] && ARGV[0].to_s.downcase == "cable"
-  @xbee_usbdev_str = "/dev/tty.usbserial-FTE4UXEA"
-end
-
-@xbee_usbdev_str ||= "/dev/tty.usbserial-A7004nmf"
-
-# default baud - this can be overridden on the command line
-@xbee_baud = 9600
-
-# serial framing
-@data_bits = 8
-@stop_bits = 1
-@parity = 0
-
 require 'pp'
 
 @xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
