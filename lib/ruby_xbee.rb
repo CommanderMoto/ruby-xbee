@@ -67,7 +67,7 @@ module XBee
 
   class Base
     include XBee
-    attr_accessor :xbee_serialport, :guard_time
+    attr_accessor :xbee_serialport, :guard_time, :command_mode_timeout, :command_mode_active, :api_mode_active
 
     # XBee response times vary based on both hardware and firmware versions.  These
     # constants may need to be adjusted for your devices, but these will
@@ -82,9 +82,23 @@ module XBee
   Sends an AT command to the XBee device and returns any output collected as a result of that command
 =end
     def send_command_and_get_result(at_command, echo = false)
-      @xbee_serialport.write("#{at_command}\r")
-      @xbee_serialport.flush
-      @xbee_serialport.gets("\r")
+      result = nil
+      if api_mode_active
+      else
+        if command_mode_active
+          @xbee_serialport.write("#{at_command}\r")
+          @xbee_serialport.flush
+          reset_command_mode_timeout_timer
+          result = @xbee_serialport.gets("\r")
+        else
+          in_command_mode do
+            @xbee_serialport.write("#{at_command}\r")
+            @xbee_serialport.flush
+            result = @xbee_serialport.gets("\r")
+          end
+        end
+      end
+      result
     end
 
 =begin rdoc
@@ -104,14 +118,23 @@ module XBee
       @paritycodes = { :None => 0, :Even => 1, :Odd => 2, :Mark => 3, :Space => 4 }
       @iotypes = { :Disabled => 0, :ADC => 2, :DI => 3, :DO_Low => 4, :DO_High => 5,
                    :Associated_Indicator => 1, :RTS => 1, :CTS => 1, :RS485_Low => 6, :RS485_High => 7 }
+      self.command_mode_timeout = 0x64
+      self.command_mode_active = false
+      self.api_mode_active = false
     end
 
-    def guard_time(command_mode=false)
+    def guard_time
       @guard_time_configuration_read ||= false
-      if command_mode && !@guard_time_configuration_read then
-        gt = send_command_and_get_result("ATGT")
-        @guard_time = Integer("0x#{gt}")
-        @guard_time_configuration_read = true
+      unless @guard_time_configuration_read
+        if command_mode_active
+          gt = send_command_and_get_result("ATGT")
+          @guard_time = Integer("0x#{gt}")
+          ct = send_command_and_get_result("ATCT")
+          @command_mode_timeout = Integer("0x#{ct}")
+          @guard_time_configuration_read = true
+        elsif api_mode_active
+          # TODO : Retrieve guard time via API
+        end
       end
       @guard_time ||= 1000.0
     end
@@ -128,14 +151,34 @@ module XBee
   The expected return value is "OK"
 =end
     def attention
-      sleep guard_time_secs + 0.1
+      sleep guard_time_secs + 0.01
       @xbee_serialport.write("+++")
-      sleep guard_time_secs + 0.1
+      sleep guard_time_secs + 0.01
+      command_mode_active = true
       getresponse   # flush up to +++ response if needed
-      guard_time(true)
+      guard_time # fetch guard time from the device, if we haven't already
+
       # if XBee is already in command mode, there will be no response, so make an explicit
       # AT call to insure an OK response
       send_command_and_get_result("AT")
+    end
+
+    def reset_command_mode_timeout_timer
+      @command_mode_timeout_thread && @command_mode_timeout_thread.kill
+      # @command_mode_timeout_thread = Thread.new { sleep self.command_mode_timeout / 10 && self.command_mode_active=false }
+    end
+
+    def in_command_mode
+      sleep guard_time_secs + 0.01
+      @xbee_serialport.write("+++")
+      sleep guard_time_secs + 0.01
+      self.command_mode_active = true
+      getresponse   # flush up to +++ response if needed
+      guard_time
+      yield if block_given?
+      result = send_command_and_get_result("ATCN")
+      self.command_mode_active = false
+      result
     end
 
 =begin rdoc
@@ -285,8 +328,7 @@ module XBee
   value will be 0
 =end
     def received_signal_strength
-      @xbee_serialport.write("ATDB\r")
-      response = getresponse().strip.chomp
+      response = send_command_and_get_result("ATDB")
       # this response is an absolute hex value which is in -dBm
       # modify this so it returns actual - dBm value
       dbm = -(response.hex)
@@ -325,7 +367,7 @@ module XBee
 =end
    def parity
      @xbee_serialport.write("ATNB\r")
-     response = getresponse().strip.chomp
+     response = send_command_and_get_result("ATNB")
      @paritycodes.index( response.to_i )
    end
 

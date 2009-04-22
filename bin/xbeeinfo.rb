@@ -2,7 +2,7 @@
 # == Synopsis
 # xbeeinfo.rb - A Ruby utility for extracting XBee setup information using xbee ruby class (Ruby::XBee)
 #
-# :title: A Ruby utility for extracting XBee setup information using xbee ruby class (Ruby::XBee) 
+# :title: A Ruby utility for extracting XBee setup information using xbee ruby class (Ruby::XBee)
 # == Usage
 #  ./xbeeinfo.rb
 #
@@ -42,8 +42,8 @@
 # Series 1 XBee and XBee Pro modules
 #
 # == Copyright
-# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox 
-# 
+# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+#
 # == License
 #
 # This program is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@
 # You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org
 #
 # see Digi product manual: "Product Manual v1.xCx - 802.15.4 Protocol"
-# for details on the operation of XBee series 1 modules. 
+# for details on the operation of XBee series 1 modules.
 
 
 $: << File.dirname(__FILE__)
@@ -77,7 +77,7 @@ require 'pp'
 
 @xbee = XBee::V2.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
-puts "Attention: #{@xbee.attention}"
+#puts "Attention: #{@xbee.attention}"
 puts "Firmware: #{@xbee.fw_rev}"
 puts "Hardware: #{@xbee.hw_rev}"
 puts "Version Long: #{@xbee.hw_rev}"
@@ -88,7 +88,7 @@ puts "Parity: #{@xbee.parity}"
 puts "Neighbors:"
 pp @xbee.neighbors
 
-puts "Attention: #{@xbee.attention}"
+#puts "Attention: #{@xbee.attention}"
 puts "Node ID: #{@xbee.node_id}"
 #puts "Channel: #{@xbee.channel}"
 puts "PAN ID: #{@xbee.pan_id}"
