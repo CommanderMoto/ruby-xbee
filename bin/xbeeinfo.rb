@@ -75,11 +75,12 @@ require 'ruby-xbee'
 
 require 'pp'
 
-@xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee::V2.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 puts "Attention: #{@xbee.attention}"
 puts "Firmware: #{@xbee.fw_rev}"
 puts "Hardware: #{@xbee.hw_rev}"
+puts "Version Long: #{@xbee.hw_rev}"
 
 puts "Baud: #{@xbee.baud}"
 puts "Parity: #{@xbee.parity}"
@@ -87,8 +88,9 @@ puts "Parity: #{@xbee.parity}"
 puts "Neighbors:"
 pp @xbee.neighbors
 
+puts "Attention: #{@xbee.attention}"
 puts "Node ID: #{@xbee.node_id}"
-puts "Channel: #{@xbee.channel}"
+#puts "Channel: #{@xbee.channel}"
 puts "PAN ID: #{@xbee.pan_id}"
 puts "MY: #{@xbee.my_src_address}"
 puts "SH: #{@xbee.serial_num_high}"
