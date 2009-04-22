@@ -2,7 +2,7 @@
 # xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host
 #
 # this code is designed for the following XBee modules:
-#   IEEE® 802.15.4 OEM RF Modules by Digi International
+#   IEEE¬Æ 802.15.4 OEM RF Modules by Digi International
 #   Series 1 XBee and XBee Pro modules
 #
 # :title: xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host
@@ -30,6 +30,8 @@
 
 require 'date'
 require 'pp'
+require 'scanf'
+require 'xbee_api'
 
 begin
   gem 'ruby-serialport'
@@ -65,7 +67,7 @@ module XBee
 
   class Base
     include XBee
-    attr_accessor :xbee_serialport
+    attr_accessor :xbee_serialport, :guard_time
 
     # XBee response times vary based on both hardware and firmware versions.  These
     # constants may need to be adjusted for your devices, but these will
@@ -75,6 +77,15 @@ module XBee
     LONG_READ_TIMEOUT    = 3000
 
     VERSION = "1.0"                 # version of this class
+
+=begin rdoc
+  Sends an AT command to the XBee device and returns any output collected as a result of that command
+=end
+    def send_command_and_get_result(at_command, echo = false)
+      @xbee_serialport.write("#{at_command}\r")
+      @xbee_serialport.flush
+      @xbee_serialport.gets("\r")
+    end
 
 =begin rdoc
   initializes the communication link with the XBee device.  These parameters must match those which
@@ -87,6 +98,7 @@ module XBee
     def initialize( xbee_usbdev_str, baud, data_bits, stop_bits, parity )
       # open serial port device to XBee
       @xbee_serialport = SerialPort.new( xbee_usbdev_str, baud.to_i, data_bits.to_i, stop_bits.to_i, parity )
+      #@xbee_serialport.flow_control = (SerialPort::HARD)
       @xbee_serialport.read_timeout = TYPICAL_READ_TIMEOUT
       @baudcodes = { 1200 => 0, 2400 => 1, 4800 => 2, 9600 => 3, 19200 => 4, 38400 => 5, 57600 => 6, 115200 => 7 }
       @paritycodes = { :None => 0, :Even => 1, :Odd => 2, :Mark => 3, :Space => 4 }
@@ -94,110 +106,57 @@ module XBee
                    :Associated_Indicator => 1, :RTS => 1, :CTS => 1, :RS485_Low => 6, :RS485_High => 7 }
     end
 
+    def guard_time(command_mode=false)
+      @guard_time_configuration_read ||= false
+      if command_mode && !@guard_time_configuration_read then
+        gt = send_command_and_get_result("ATGT")
+        @guard_time = Integer("0x#{gt}")
+        @guard_time_configuration_read = true
+      end
+      @guard_time ||= 1000.0
+    end
+
+=begin rdoc
+  Guard time (ATGT / @guard_time) is defined in milliseconds; this routine returns the equivalent time in seconds
+=end
+    def guard_time_secs
+      guard_time / 1000.0
+    end
 
 =begin rdoc
   Puts the XBee into AT command mode and insures that we can bring it to attention.
   The expected return value is "OK"
 =end
     def attention
+      sleep guard_time_secs + 0.1
       @xbee_serialport.write("+++")
-      sleep 1
+      sleep guard_time_secs + 0.1
       getresponse   # flush up to +++ response if needed
+      guard_time(true)
       # if XBee is already in command mode, there will be no response, so make an explicit
       # AT call to insure an OK response
-      @xbee_serialport.write("AT\r")
-      getresponse().strip.chomp
+      send_command_and_get_result("AT")
     end
 
 =begin rdoc
   Retrieve XBee firmware version
 =end
     def fw_rev
-      @xbee_serialport.write("ATVR\r")
-      response = getresponse
-      response.strip.chomp
+      send_command_and_get_result("ATVR")
     end
 
 =begin rdoc
   Retrieve XBee hardware version
 =end
     def hw_rev
-      @xbee_serialport.write("ATHV\r")
-      response = getresponse
-      response.strip.chomp
-    end
-
-=begin rdoc
-   Neighbor node discovery. Returns an array of hashes each element of the array contains a hash
-   each hash contains keys:  :MY, :SH, :SL, :DB, :NI
-   representing addresses source address, Serial High, Serial Low, Received signal strength,
-   node identifier respectively.  Aan example of the results returned (hash as seen by pp):
-
-     [{:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A642", :DB=>-24},
-      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A697", :DB=>-33},
-      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"40085AD5", :DB=>-52}]
-
-   Signal strength (:DB) is reported in units of -dBM.
-=end rdoc
-    def neighbors
-      # neighbors often takes more than 1000ms to return data
-      tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
-      @xbee_serialport.write("ATND\r")
-      response = getresponse
-
-      # parse nodes and stuff an array of hashes
-      @neighbors = Array.new
-      linetype = 0
-      neighbor = 0
-
-      if response.nil?
-        return @neighbors   # return an empty array
-      end
-
-      response.each_line do | line |
-
-        line.chomp!
-
-        if line.size > 0
-          case linetype
-          when 0    # MY
-              @neighbors[ neighbor ] = Hash.new
-              @neighbors[ neighbor ].store( :MY, line )
-
-          when 1    # SH
-              @neighbors[ neighbor ].store( :SH, line )
-
-          when 2    # SL
-              @neighbors[ neighbor ].store( :SL, line )
-
-          when 3    # DB
-              @neighbors[ neighbor ].store( :DB, -(line.hex) )
-
-          when 4    # NI
-              @neighbors[ neighbor ].store( :NI, line )
-
-              neighbor += 1
-          end
-
-          if linetype < 4
-            linetype += 1
-          else
-            linetype = 0
-          end
-        end
-      end
-
-      @xbee_serialport.read_timeout = tmp
-      @neighbors
+      send_command_and_get_result("ATHV")
     end
 
 =begin rdoc
   returns the source address of the XBee device - the MY address value
 =end
     def my_src_address
-      @xbee_serialport.write("ATMY\r")
-      getresponse.strip.chomp
+      send_command_and_get_result("ATMY")
     end
 
 =begin rdoc
@@ -206,70 +165,49 @@ module XBee
   and the XBee will not listen for packets with 16-bit address fields
 =end
     def my_src_address!(new_addr)
-      @xbee_serialport.write("ATMY#{new_addr}\r")
-      getresponse
+      send_command_and_get_result("ATMY#{new_addr}")
     end
 
 =begin rdoc
   returns the low portion of the XBee device's current destination address
 =end
     def destination_low
-      @xbee_serialport.write("ATDL\r")
-      getresponse
+      send_command_and_get_result("ATDL")
     end
 
 =begin rdoc
   sets the low portion of the XBee device's destination address
 =end
     def destination_low!(low_addr)
-      @xbee_serialport.write("ATDL#{low_addr}\r")
-      getresponse
+      send_command_and_get_result("ATDL#{low_addr}")
     end
 
 =begin rdoc
   returns the high portion of the XBee device's current destination address
 =end
     def destination_high
-      @xbee_serialport.write("ATDH\r")
-      getresponse
+      send_command_and_get_result("ATDH")
     end
 
 =begin rdoc
   sets the high portion of the XBee device's current destination address
 =end
     def destination_high!(high_addr)
-      @xbee_serialport.write("ATDH#{high_addr}\r")
-      getresponse
+      send_command_and_get_result("ATDH#{high_addr}")
     end
 
 =begin rdoc
   returns the low portion of the XBee device's serial number. this value is factory set.
 =end
     def serial_num_low
-      @xbee_serialport.write("ATSL\r")
-      getresponse
+      send_command_and_get_result("ATSL")
     end
 
 =begin rdoc
   returns the high portion of the XBee devices serial number. this value is factory set.
 =end
     def serial_num_high
-      @xbee_serialport.write("ATSH\r")
-      getresponse
-    end
-
-=begin rdoc
-  returns the channel number of the XBee device.  this value, along with the PAN ID,
-  and MY address determines the addressability of the device and what it can listen to
-=end
-    def channel
-      # channel often takes more than 1000ms to return data
-      tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
-      @xbee_serialport.write("ATCH\r")
-      response = getresponse
-      @xbee_serialport.read_timeout = tmp
-      response.strip.chomp
+      send_command_and_get_result("ATSH")
     end
 
 =begin rdoc
@@ -619,8 +557,270 @@ module XBee
 
   class V1 < Base
 
+=begin rdoc
+  returns the channel number of the XBee device.  this value, along with the PAN ID,
+  and MY address determines the addressability of the device and what it can listen to
+=end
+    def channel
+      # channel often takes more than 1000ms to return data
+      tmp = @xbee_serialport.read_timeout
+      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.write("ATCH\r")
+      response = getresponse
+      @xbee_serialport.read_timeout = tmp
+      response && response.strip.chomp
+    end
+
+=begin rdoc
+   Neighbor node discovery. Returns an array of hashes each element of the array contains a hash
+   each hash contains keys:  :MY, :SH, :SL, :DB, :NI
+   representing addresses source address, Serial High, Serial Low, Received signal strength,
+   node identifier respectively.  Aan example of the results returned (hash as seen by pp):
+
+     [{:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A642", :DB=>-24},
+      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A697", :DB=>-33},
+      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"40085AD5", :DB=>-52}]
+
+   Signal strength (:DB) is reported in units of -dBM.
+=end rdoc
+    def neighbors
+      # neighbors often takes more than 1000ms to return data
+      tmp = @xbee_serialport.read_timeout
+      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.write("ATND\r")
+      response = getresponse
+
+      # parse nodes and stuff an array of hashes
+      @neighbors = Array.new
+      linetype = 0
+      neighbor = 0
+
+      if response.nil?
+        return @neighbors   # return an empty array
+      end
+
+      response.each_line do | line |
+
+        line.chomp!
+
+        if line.size > 0
+          case linetype
+          when 0    # MY
+              @neighbors[ neighbor ] = Hash.new
+              @neighbors[ neighbor ].store( :MY, line )
+
+          when 1    # SH
+              @neighbors[ neighbor ].store( :SH, line )
+
+          when 2    # SL
+              @neighbors[ neighbor ].store( :SL, line )
+
+          when 3    # DB
+              @neighbors[ neighbor ].store( :DB, -(line.hex) )
+
+          when 4    # NI
+              @neighbors[ neighbor ].store( :NI, line )
+
+              neighbor += 1
+          end
+
+          if linetype < 4
+            linetype += 1
+          else
+            linetype = 0
+          end
+        end
+      end
+
+      @xbee_serialport.read_timeout = tmp
+      @neighbors
+    end
   end  # class V1
 
+
+  class V2 < Base
+    attr_accessor :node_discovery_timeout
+
+    def initialize(*args)
+      super(*args)
+      @node_discovery_timeout = 0x82
+    end
+
+=begin rdoc
+   Node discovery timeout (ATNT / @node_discovery_timeout) is defined in 100 msec increments; this routine returns the
+   equivalent time in seconds
+=end
+    def node_discovery_timeout_secs
+      return node_discovery_timeout / 10.0
+    end
+
+=begin rdoc
+   Neighbor node discovery. Returns an array of hashes each element of the array contains a hash
+   each hash contains keys:  :MY, :SH, :SL, :DB, :NI
+   representing addresses source address, Serial High, Serial Low, Received signal strength,
+   node identifier respectively.  Aan example of the results returned (hash as seen by pp):
+
+     [{:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A642", :DB=>-24},
+      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"4008A697", :DB=>-33},
+      {:NI=>" ", :MY=>"0", :SH=>"13A200", :SL=>"40085AD5", :DB=>-52}]
+
+   Signal strength (:DB) is reported in units of -dBM.
+=end rdoc
+    def neighbors
+      # neighbors often takes more than 1000ms to return data
+      tmp = @xbee_serialport.read_timeout
+      @xbee_serialport.read_timeout = (node_discovery_timeout * 100) + 1000
+      @xbee_serialport.write("ATND\r")
+      @xbee_serialport.flush
+      sleep node_discovery_timeout_secs + 0.5
+
+      # parse nodes and stuff an array of hashes
+      neighbors = []
+      #states = [:SH, :SL, :NI, :PARENT_NETWORK_ADDRESS, :DEVICE_TYPE, :STATUS, :PROFILE_ID, :MANUFACTURER_ID]
+      #response = getresponse
+      # puts response
+      #response.scan(/FFFE\n(.*)\s(.*)\s(.*)\s(.*)\s(.*)\s(.*)\s(.*)\s(.*)\s\n/) do |sh, sl, ni, parent_network_address, device_type, status, profile_id, manufacturer_id|
+      @xbee_serialport.scanf("FFFE\r%x\r%x\r%s\r%x\r%x\r%x\r%x\r%x\r\r") do |sh, sl, ni, parent_network_address, device_type, status, profile_id, manufacturer_id|
+        puts "scanf returned something! sh=#{sh}, sl=#{sl}, ni=#{ni}, parent_network_address=#{parent_network_address}, device_type=#{device_type}, status=#{status}, profile_id=#{profile_id}, mfr_id=#{manufacturer_id}"
+        neighbors << {
+                :SH => sh,
+                :SL => sl,
+                :NI => ni,
+                :PARENT_NETWORK_ADDRESS => parent_network_address,
+                :DEVICE_TYPE => device_type,
+                :STATUS => status,
+                :PROFILE_ID => profile_id,
+                :MANUFACTURER_ID => manufacturer_id,
+        }
+      end
+      #response.each_line do | line |
+      #  unless line.empty?
+      #    if current_state == 0
+      #      neighbors << current_neighbor unless current_neighbor.nil?
+      #      current_neighbor = {}
+      #    end
+      #    current_neighbor[states[current_state]] = line.chomp
+      #  end
+      #  current_state = (current_state >= (states.length - 1)) ? 0 : current_state + 1
+      #end
+      @xbee_serialport.read_timeout = tmp
+      neighbors
+    end
+
+=begin rdoc
+  reads an i/o port configuration on the XBee for analog to digital or digital input or output (GPIO)
+
+  this method returns an I/O type symbol of:
+
+    :Disabled
+    :ADC
+    :DI
+    :DO_Low
+    :DO_High
+    :Associated_Indicator
+    :RTS
+    :CTS
+    :RS485_Low
+    :RS485_High
+
+  Not all DIO ports are capable of every configuration listed above.  This method will properly translate
+  the XBee's response value to the symbol above when the same value has different meanings from port to port.
+
+  The port parameter may be any symbol :D0 - :D7, :P0-:P2
+=end
+
+    def dio( port )
+      at = "AT#{port.to_s}\r"
+      @xbee_serialport.write( at )
+      response = getresponse.to_i
+
+      if response == 1  # the value of 1 is overloaded based on port number
+        case port
+        when :D5
+          return :Associated_Indicator
+        when :D6
+          return :RTS
+        when :D7
+          return :CTS
+        end
+      else
+        @iotypes.index(response)
+      end
+
+    end
+
+=begin rdoc
+  configures an i/o port on the XBee for analog to digital or digital input or output (GPIO)
+
+  port parameter valid values are the symbols :D0 through :D8
+
+  iotype parameter valid values are symbols:
+    :Disabled
+    :ADC
+    :DI
+    :DO_Low
+    :DO_High
+    :Associated_Indicator
+    :RTS
+    :CTS
+    :RS485_Low
+    :RS485_High
+
+  note: not all iotypes are compatible with every port type, see the XBee manual for exceptions and semantics
+
+  note: it is critical you have upgraded firmware in your XBee or DIO ports 0-4 cannot be read
+        (ie: ATD0 will return ERROR - this is an XBee firmware bug that's fixed in revs later than 1083)
+
+  note: tested with rev 10CD, fails with rev 1083
+=end
+
+    def dio!( port, iotype )
+      at = "AT#{port.to_s}#{@iotypes[iotype]}\r"
+      @xbee_serialport.write( at )
+      getresponse
+    end
+
+=begin rdoc
+  Retrieve XBee firmware version
+=end
+    def version_long
+      @xbee_serialport.write("ATVL\r")
+      response = getresponse
+      response && response.strip.chomp
+    end
+
+    def enter_api_mode(noisy = false)
+      attention
+      if noisy
+        print "Requesting API mode ... "
+        puts send_command_and_get_result("ATAP1")
+        print "Exiting from command mode ... "
+        puts send_command_and_get_result("ATCN")
+      else
+        send_command_and_get_result("ATAP1")
+        send_command_and_get_result("ATCN")
+      end
+    end
+
+    def test_api
+      version_cmd = XBee::Frame::ATCommand.new("VL",69,nil)
+      #puts "Main thread still printing to screen ..."
+      #dumped_cmd = version_cmd._dump
+      #print "Sending the following bytes out on the serial port: #{dumped_cmd.unpack("c*").map {|c| "%x" % c } .join(",")} ..."
+      @xbee_serialport.write(version_cmd._dump)
+      @xbee_serialport.flush
+      Thread.new do
+        begin
+          while rcv_frame = XBee::Frame.factory(@xbee_serialport)
+            pp rcv_frame
+          end
+        rescue EOFError
+          retry
+        end
+      end
+      sleep 30
+    end
+  end
 end  # module XBee
 
 =begin rdoc
