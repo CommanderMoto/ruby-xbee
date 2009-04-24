@@ -1,24 +1,40 @@
+class String
+  def xb_escape
+    #self.gsub(/[\176\175\021\023]/) { |c| [0x7D, c[0] ^ 0x20].pack("CC")}
+    self
+  end
+  def xb_unescape
+    #self.gsub(/\175./) { |ec| [ec.unpack("CC").last ^ 0x20].pack("C")}
+    self
+  end
+end
+
 module XBee
   module Frame
     def Frame.checksum(data)
-      0xFF - (data.unpack("c*").inject(0) { |sum, byte| (sum + byte) & 0xFF })
+      0xFF - (data.xb_unescape.unpack("C*").inject(0) { |sum, byte| (sum + byte) & 0xFF })
     end
 
     def Frame.factory(source_io)
       stray_bytes = []
-      source_io.read_timeout = 10000
       until (start_delimiter = source_io.readchar) == 0x7e
         puts "Stray byte 0x%x" % start_delimiter
         stray_bytes << start_delimiter
       end
       puts "Got some stray bytes for ya: #{stray_bytes.map {|b| "0x%x" % b} .join(", ")}" unless stray_bytes.empty?
-      length = source_io.read(2).unpack("n").first
-      data = source_io.read(length) || [0,0]
+      header = source_io.read(3).xb_unescape
+      frame_length = api_identifier = nil
+      if header.length == 3
+        frame_length, api_identifier = header.unpack("nc")
+      else
+        frame_length, api_identifier = header.unpack("n").first, source_io.readchar
+      end
+      cmd_data = source_io.read(frame_length - 1).unescape || "Noooooo! Bad Data!"
       sent_checksum = source_io.getc
-      unless sent_checksum == Frame.checksum(data)
+      unless sent_checksum == Frame.checksum(cmd_data)
         raise "Bad checksum - data discarded"
       end
-      ReceivedFrame.instantiate_with(data)
+      ReceivedFrame.instantiate(cmd_data)
     end
 
     class Base
@@ -41,7 +57,7 @@ module XBee
     end
 
     class ReceivedFrame < Base
-      def ReceivedFrame.instantiate_with(data)
+      def ReceivedFrame.instantiate(data)
         case data[0]
         when 0x8A : ModemStatus.new(data)
         when 0x88 : ATCommandResponse.new(data)
@@ -56,13 +72,12 @@ module XBee
       def initialize(frame_data)
         raise "Frame data must be an enumerable type" unless frame_data.kind_of?(Enumerable)
         self.api_identifier = frame_data[0]
+        puts "Initializing a ReceivedFrame of type 0x%x" % self.api_identifier
         self.cmd_data = frame_data[1..-1]
       end
     end
 
     class ModemStatus < ReceivedFrame
-      def api_identifier ; 0x8A ; end
-
       attr_accessor :status
 
       def initialize(data = nil)
@@ -116,7 +131,6 @@ module XBee
     end
 
     class ATCommandResponse < ReceivedFrame
-      def api_identifier ; 0x88 ; end
       attr_accessor :frame_id, :at_command, :status, :retrieved_value
 
       def initialize(data = nil)
@@ -143,7 +157,6 @@ module XBee
     end
 
     class RemoteCommandResponse < ReceivedFrame
-      def api_identifier ; 0x97 ; end
     end
 
     class TransmitRequest < Base
@@ -155,15 +168,12 @@ module XBee
     end
 
     class TransmitStatus < ReceivedFrame
-      def api_identifier ; 0x8B ; end
     end
 
     class ReceivePacket < ReceivedFrame
-      def api_identifier ; 0x90 ; end
     end
 
     class ExplicitRxIndicator < ReceivedFrame
-      def api_identifier ; 0x91 ; end
     end
   end
 end
