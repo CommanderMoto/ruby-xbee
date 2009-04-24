@@ -5,7 +5,8 @@ require 'ruby-xbee'
 require 'xbee_api'
 require 'pp'
 
-@xbee = XBee::V2.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee::RFModule.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 puts "Testing API now ..."
-@xbee.test_api
+response = @xbee.neighbors
+puts "status = #{response.status}, parameter_value = #{response.retrieved_value.gsub("\r","\n")}"
