@@ -175,12 +175,6 @@ module XBee
       end
     end
 
-    def proveit
-      version_long_cmd = XBee::Frame::ATCommand.new("VL",69,nil)
-      @xbee_serialport.write(version_long_cmd._dump)
-      XBee::Frame.factory(@xbee_serialport)
-    end
-
 =begin rdoc
   reads an i/o port configuration on the XBee for analog to digital or digital input or output (GPIO)
 
