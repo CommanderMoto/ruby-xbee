@@ -165,7 +165,7 @@ module XBee
       end
 
       responses.map do |r|
-        unpacked_fields = r.retrieved_value.unpack("nNNZnCCnn")
+        unpacked_fields = r.retrieved_value.unpack("nNNZxnCCnn")
         return_fields = [:SH, :SL, :NI, :PARENT_NETWORK_ADDRESS, :DEVICE_TYPE, :STATUS, :PROFILE_ID, :MANUFACTURER_ID]
         unpacked_fields.shift #Throw out the junk at the start of the discover packet
         return_fields.inject(Hash.new) do |return_hash, field_name|

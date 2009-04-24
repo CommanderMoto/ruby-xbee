@@ -112,7 +112,7 @@ module XBee
 
       attr_accessor :frame_id, :at_command, :parameter_value, :parameter_pack_string
 
-      def initialize(at_command, frame_id = nil, parameter_value = nil)
+      def initialize(at_command, frame_id = nil, parameter_value = nil, parameter_pack_string = "a*")
         self.frame_id = frame_id
         self.at_command = at_command # TODO: Check for valid AT command codes here
         self.parameter_value = parameter_value
