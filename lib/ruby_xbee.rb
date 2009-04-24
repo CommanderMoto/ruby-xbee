@@ -2,7 +2,7 @@
 # xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host
 #
 # this code is designed for the following XBee modules:
-#   IEEE¬Æ 802.15.4 OEM RF Modules by Digi International
+#   IEEE¬¨√Ü 802.15.4 OEM RF Modules by Digi International
 #   Series 1 XBee and XBee Pro modules
 #
 # :title: xbee.rb - A Ruby class for manipulating an XBee via the serial communication port of the host
@@ -94,16 +94,16 @@ module XBee
       sleep guard_time_secs
       @xbee_serialport.write("+++")
       sleep guard_time_secs
-      puts @xbee_serialport.read(3)
+      @xbee_serialport.read(3)
       # Reset module parameters to factory defaults ...
       @xbee_serialport.write("ATRE\r")
-      puts @xbee_serialport.read(3)
+      @xbee_serialport.read(3)
       # Set API Mode 2 (include escaped characters)
       @xbee_serialport.write("ATAP2\r")
-      puts @xbee_serialport.read(3)
+      @xbee_serialport.read(3)
       # Exit command mode
       @xbee_serialport.write("ATCN\r")
-      puts @xbee_serialport.read(3)
+      @xbee_serialport.read(3)
     end
 
 =begin rdoc
@@ -144,26 +144,30 @@ module XBee
       # neighbors often takes more than 1000ms to return data
       node_discover_cmd = XBee::Frame::ATCommand.new("ND",69,nil)
       #puts "Node discover command dump: #{node_discover_cmd._dump.unpack("C*").join(", ")}"
+      tmp = @xbee_serialport.read_timeout
       @xbee_serialport.read_timeout = Integer(node_discovery_timeout_secs * 1050)
       @xbee_serialport.write(node_discover_cmd._dump)
-      @xbee_serialport.flush
       responses = []
+      #read_thread = Thread.new do
       begin
         loop do
           r = XBee::Frame.factory(@xbee_serialport)
           # puts "Got a response! Frame ID: #{r.frame_id}, Command: #{r.at_command}, Status: #{r.status}, Value: #{r.retrieved_value}"
-          if r.retrieved_value.length > 10
+          if r.retrieved_value.length > 18
             responses << r
-          elsif r.cmd_data =~ /ND/
+          elsif r.cmd_data =~ /END/
+            # w00t - the module is telling us it's done with the discovery process.
             break
           else
-            puts "Unexpected response to ATND command: #{r.inspect}"
+            raise "Unexpected response to ATND command: #{r.inspect}"
           end
         end
       rescue Exception => e
         puts "Okay, must have finally timed out on the serial read: #{e}."
       end
-
+      #end
+      @xbee_serialport.read_timeout = tmp
+      #read_thread.join
       responses.map do |r|
         unpacked_fields = r.retrieved_value.unpack("nNNZxnCCnn")
         return_fields = [:SH, :SL, :NI, :PARENT_NETWORK_ADDRESS, :DEVICE_TYPE, :STATUS, :PROFILE_ID, :MANUFACTURER_ID]
@@ -252,9 +256,10 @@ module XBee
   Retrieve XBee firmware version
 =end
     def version_long
-      @xbee_serialport.write("ATVL\r")
-      response = getresponse
-      response && response.strip.chomp
+      version_long_cmd = XBee::Frame::ATCommand.new("VL",69,nil)
+      @xbee_serialport.write(version_long_cmd._dump)
+      r = XBee::Frame.factory(@xbee_serialport)
+      r.retrieved_value.gsub("\r","\n")
     end
 
     def enter_api_mode(noisy = false)
