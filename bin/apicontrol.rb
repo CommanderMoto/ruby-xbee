@@ -9,4 +9,12 @@ require 'pp'
 
 puts "Testing API now ..."
 response = @xbee.neighbors
-puts "status = #{response.status}, parameter_value = #{response.retrieved_value.gsub("\r","\n")}"
+response.each do |r|
+  r.each do |key, val|
+    if (key == :NI)
+      puts "#{key} = #{val}"
+    else
+      puts "#{key} = 0x%x" % val
+    end
+  end
+end

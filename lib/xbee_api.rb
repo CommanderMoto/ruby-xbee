@@ -1,18 +1,16 @@
 class String
   def xb_escape
-    #self.gsub(/[\176\175\021\023]/) { |c| [0x7D, c[0] ^ 0x20].pack("CC")}
-    self
+    self.gsub(/[\176\175\021\023]/) { |c| [0x7D, c[0] ^ 0x20].pack("CC")}
   end
   def xb_unescape
-    #self.gsub(/\175./) { |ec| [ec.unpack("CC").last ^ 0x20].pack("C")}
-    self
+    self.gsub(/\175./) { |ec| [ec.unpack("CC").last ^ 0x20].pack("C")}
   end
 end
 
 module XBee
   module Frame
     def Frame.checksum(data)
-      0xFF - (data.xb_unescape.unpack("C*").inject(0) { |sum, byte| (sum + byte) & 0xFF })
+      0xFF - (data.unpack("C*").inject(0) { |sum, byte| (sum + byte) & 0xFF })
     end
 
     def Frame.factory(source_io)
@@ -23,36 +21,41 @@ module XBee
       end
       puts "Got some stray bytes for ya: #{stray_bytes.map {|b| "0x%x" % b} .join(", ")}" unless stray_bytes.empty?
       header = source_io.read(3).xb_unescape
-      frame_length = api_identifier = nil
+      puts "Read header: #{header.unpack("C*").join(", ")}"
+      frame_remaining = frame_length = api_identifier = cmd_data = ""
       if header.length == 3
-        frame_length, api_identifier = header.unpack("nc")
+        frame_length, api_identifier = header.unpack("nC")
       else
         frame_length, api_identifier = header.unpack("n").first, source_io.readchar
       end
-      cmd_data = source_io.read(frame_length - 1).unescape || "Noooooo! Bad Data!"
+      cmd_data_intended_length = frame_length - 1
+      while ((unescaped_length = cmd_data.xb_unescape.length) < cmd_data_intended_length)
+        cmd_data += source_io.read(cmd_data_intended_length - unescaped_length)
+      end
+      data = api_identifier.chr + cmd_data.xb_unescape
       sent_checksum = source_io.getc
-      unless sent_checksum == Frame.checksum(cmd_data)
+      unless sent_checksum == Frame.checksum(data)
         raise "Bad checksum - data discarded"
       end
-      ReceivedFrame.instantiate(cmd_data)
+      ReceivedFrame.instantiate(data)
     end
 
     class Base
       attr_accessor :api_identifier, :cmd_data
 
-      def api_identifier ; 0x00 ; end
+      def api_identifier ; @api_identifier ||= 0x00 ; end
 
-      def cmd_data ; "" ; end
+      def cmd_data ; @cmd_data ||= "" ; end
 
       def length ; data.length ; end
 
       def data
-        Array(api_identifier).pack("c") + cmd_data
+        Array(api_identifier).pack("C") + cmd_data
       end
 
       def _dump
         raise "Too much data (#{self.length} bytes) to fit into one frame!" if (self.length > 0xFFFF)
-        [0x7E, length].pack("cn") + data + [Frame.checksum(data)].pack("c")
+        "~" + [length].pack("n").xb_escape + data.xb_escape + [Frame.checksum(data)].pack("C")
       end
     end
 

@@ -144,24 +144,34 @@ module XBee
       # neighbors often takes more than 1000ms to return data
       node_discover_cmd = XBee::Frame::ATCommand.new("ND",69,nil)
       #puts "Node discover command dump: #{node_discover_cmd._dump.unpack("C*").join(", ")}"
-      @xbee_serialport.read_timeout = node_discovery_timeout_secs * 1050
+      @xbee_serialport.read_timeout = Integer(node_discovery_timeout_secs * 1050)
       @xbee_serialport.write(node_discover_cmd._dump)
       @xbee_serialport.flush
       responses = []
       begin
         loop do
-          responses << XBee::Frame.factory(@xbee_serialport) rescue retry
-          puts "Really? Got a response! #{responses.last.retrieved_value.unpack("nNNZnccnn")}"
+          r = XBee::Frame.factory(@xbee_serialport)
+          # puts "Got a response! Frame ID: #{r.frame_id}, Command: #{r.at_command}, Status: #{r.status}, Value: #{r.retrieved_value}"
+          if r.retrieved_value.length > 10
+            responses << r
+          elsif r.cmd_data =~ /ND/
+            break
+          else
+            puts "Unexpected response to ATND command: #{r.inspect}"
+          end
         end
       rescue Exception => e
         puts "Okay, must have finally timed out on the serial read: #{e}."
       end
 
-      responses.map do |response|
-        unpacked_fields = response.retrieved_value.unpack("nNNZnccnn")
+      responses.map do |r|
+        unpacked_fields = r.retrieved_value.unpack("nNNZnCCnn")
         return_fields = [:SH, :SL, :NI, :PARENT_NETWORK_ADDRESS, :DEVICE_TYPE, :STATUS, :PROFILE_ID, :MANUFACTURER_ID]
-        unpacked_fields.shift! #Throw out the junk at the start of the discover packet
-        return_fields.inject({}) { |ret, field_name| ret[field_name] = unpacked_fields.shift! }
+        unpacked_fields.shift #Throw out the junk at the start of the discover packet
+        return_fields.inject(Hash.new) do |return_hash, field_name|
+          return_hash[field_name] = unpacked_fields.shift
+          return_hash
+        end
       end
     end
 
