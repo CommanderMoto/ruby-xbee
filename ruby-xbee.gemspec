@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby-xbee}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Ashmore"]
   s.autorequire = %q{ruby_xbee}
-  s.date = %q{2009-04-20}
+  s.date = %q{2009-04-30}
   s.email = %q{mike@motomike.net}
-  s.executables = ["ruby-xbee.rb", "xbeeconfigure.rb", "xbeedio.rb", "xbeeinfo.rb", "xbeelisten.rb", "xbeesend.rb"]
+  s.executables = ["apicontrol.rb", "ruby-xbee.rb", "xbeeconfigure.rb", "xbeedio.rb", "xbeeinfo.rb", "xbeelisten.rb", "xbeesend.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
     "README",
@@ -20,12 +20,16 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION.yml",
+    "bin/apicontrol.rb",
     "bin/ruby-xbee.rb",
     "bin/xbeeconfigure.rb",
     "bin/xbeedio.rb",
     "bin/xbeeinfo.rb",
     "bin/xbeelisten.rb",
     "bin/xbeesend.rb",
+    "lib/apimode/at_commands.rb",
+    "lib/apimode/xbee_api.rb",
+    "lib/legacy/command_mode.rb",
     "lib/ruby_xbee.rb",
     "test/ruby_xbee_test.rb",
     "test/test_helper.rb"
