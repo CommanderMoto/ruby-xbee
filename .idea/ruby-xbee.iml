@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="false" type="RUBY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="[gem] ruby-serialport (v0.7.0, /Library/Ruby/Gems/1.8/gems/ruby-serialport-0.7.0)" level="application" />
+    <orderEntry type="library" name="[gem] linecache (v0.43, /Users/mashmore/.gem/ruby/1.8/gems/linecache-0.43)" level="application" />
+    <orderEntry type="library" name="[gem] ruby-debug-base (v0.10.3, /Users/mashmore/.gem/ruby/1.8/gems/ruby-debug-base-0.10.3)" level="application" />
+    <orderEntry type="library" name="[gem] ruby-debug-ide (v0.4.5, /Library/Ruby/Gems/1.8/gems/ruby-debug-ide-0.4.5)" level="application" />
+  </component>
+  <component name="RModuleSettingsStorage">
+    <RMODULE_SETTINGS_STORAGE_ID NAME="NUMBER" VALUE="0" />
+  </component>
+</module>
+
