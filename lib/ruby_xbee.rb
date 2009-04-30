@@ -76,31 +76,10 @@ module XBee
   class XBeeUARTConfig
     attr_accessor :baud, :data_bits, :parity, :stop_bits
 
-    def parities
-      { :None => 0, :Even => 1, :Odd => 2, :Mark => 3, :Space => 4 }
-    end
-
-    def parity_code(parity_symbol)
-      if parity_symbol.kind_of?(Symbol)
-        self.parities[parity_symbol]
-      else
-        raise "parity_symbol must be one of #{parities.keys.join(", ")}"
-      end
-    end
-
-    def parity_symbol(parity_code)
-      if parity_code.kind_of?(Integer) && self.parities.values.include?(parity_code)
-        # TODO: This works for now but is bound to result in subtle failure later, I just know it.
-        self.parities.keys[parity_code]
-      else
-        raise "parity_code must be an integer in the set [#{self.parities.values.join(", ")}]"
-      end
-    end
-
-    def initialize(baud = 9600, data_bits = 8, parity = :None, stop_bits = 1)
+    def initialize(baud = 9600, data_bits = 8, parity = 0, stop_bits = 1)
       self.baud = Integer(baud)
       self.data_bits = Integer(data_bits)
-      self.parity = self.parities[parity]
+      self.parity = Integer(parity)
       self.stop_bits = Integer(stop_bits)
     end
   end

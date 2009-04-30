@@ -9,7 +9,7 @@
 # See conf/xbeeconfig.rb for configuration defaults
 #
 # Example output from xbeedio.rb
-#   $ ./xbeedio.rb 
+#   $ ./xbeedio.rb
 #    Attention: OK
 #    Port 0: Disabled
 #    Port 1: DI
@@ -28,11 +28,11 @@
 # this code is designed for the following XBee modules:
 # IEEE® 802.15.4 OEM RF Modules by Digi International
 # Series 1 XBee and XBee Pro modules
-# 
+#
 # == Copyright
 #
-# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox 
-# 
+# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+#
 # == License
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License version 3 as
@@ -53,7 +53,7 @@
 # You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org
 #
 # see Digi product manual: "Product Manual v1.xCx - 802.15.4 Protocol"
-# for details on the operation of XBee series 1 modules. 
+# for details on the operation of XBee series 1 modules.
 
 $: << File.dirname(__FILE__)
 
@@ -61,7 +61,7 @@ require 'date'
 require 'ruby-xbee'
 require 'pp'
 
-@xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+@xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
 puts "Attention: #{@xbee.attention}"
 
@@ -83,7 +83,7 @@ if ( !results.nil? && results[:ERROR].nil? )
     if ( !results[adcsym].nil? )
        puts "ADC#{adc_channel} data: #{results[adcsym]}"
     end
-  end 
+  end
 else
   puts "No DIO input data to report"
 end

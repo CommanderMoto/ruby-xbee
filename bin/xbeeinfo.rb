@@ -78,18 +78,6 @@ STDOUT.sync = 1
 $stdin.sync = true
 $stdout.sync = true
 
-#@xbee_usbdev_str = "/dev/tty.usbserial-A7004nmf"
-@xbee_usbdev_str = "/dev/tty.usbserial-FTE4UXEA"
-
-
-# default baud - this can be overridden on the command line
-@xbee_baud = 9600
-
-# serial framing
-@data_bits = 8
-@stop_bits = 1
-@parity = 0
-
 require 'pp'
 
 @xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )

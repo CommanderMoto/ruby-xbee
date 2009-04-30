@@ -1,14 +1,14 @@
-#!/usr/bin/env ruby  
+#!/usr/bin/env ruby
 #
 # == Synopsis
-# xbeeconfigure.rb - A utility for configuring an XBee using Ruby and the Ruby::XBee class 
+# xbeeconfigure.rb - A utility for configuring an XBee using Ruby and the Ruby::XBee class
 #
 # :title: xbeeconfigure.rb A utility for configuring an XBee using Ruby and the Ruby::XBee class
 #
 # == Usage
-# === Syntax 
+# === Syntax
 #   ./xbeeconfigure.rb [options]
-# 
+#
 # Command line help
 #
 #   ./xbeeconfigure.rb --help
@@ -46,8 +46,8 @@
 # Series 1 XBee and XBee Pro modules
 #
 # == Copyright
-# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox 
-# 
+# Copyright (C) 2008-2009 360VL, Inc. and Landon Cox
+#
 # == License
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License version 3 as
@@ -69,7 +69,7 @@
 # You can learn more about Ruby::XBee and other projects at http://sawdust.see-do.org
 #
 # see Digi product manual: "Product Manual v1.xCx - 802.15.4 Protocol"
-# for details on the operation of XBee series 1 modules. 
+# for details on the operation of XBee series 1 modules.
 
 $: << File.dirname(__FILE__)
 
@@ -87,25 +87,25 @@ def dump_help
 
   puts "xbeeconfigure.rb [options]"
   puts "Options:"
-  puts "   [--panid new_pan_id] [-p new_pan_id]      sets the XBee PAN ID"                               # set panid 
-  puts "   [--channel new_channel] [-c new_channel]  sets the new channel number for XBee RF"            # set channel 
+  puts "   [--panid new_pan_id] [-p new_pan_id]      sets the XBee PAN ID"                               # set panid
+  puts "   [--channel new_channel] [-c new_channel]  sets the new channel number for XBee RF"            # set channel
   puts "   [--mysrc new_address] [-M new_address]    sets MY 16-bit source address (0-0xffff)"
-  puts "   [--nodeid new_node_id] [-n new_node_id]   sets the text for the XBee node ID"                 # set nodeid 
+  puts "   [--nodeid new_node_id] [-n new_node_id]   sets the text for the XBee node ID"                 # set nodeid
   puts "   [--desthigh highaddress] [-H highaddress] sets the high portion of the destination address"   # set destination high address
-  puts "   [--destlow low_address] [-L low_address]  sets the low portion of the destination address"    # set destination low address 
+  puts "   [--destlow low_address] [-L low_address]  sets the low portion of the destination address"    # set destination low address
   puts "   [--parity [NEOMS]] [-P [NEOMS]]           sets new parity, N = 8bit no-parity, E = 8bit even, O = 8bit odd, M = 8bit mark, S = 8bit space"
   puts "   [--newbaud baud_rate] [-B baud_rate]      sets a new baud rate in XBee to take effect after configuration is complete"
 
-  puts "   [--dev device] [-d device]                use this device to talk to XBee (ie: /dev/tty.usb-791jdas)"   
-  puts "   [--baud baud_rate] [-b baud_rate]         use this baud rate for configuring the device"     # override baud 
+  puts "   [--dev device] [-d device]                use this device to talk to XBee (ie: /dev/tty.usb-791jdas)"
+  puts "   [--baud baud_rate] [-b baud_rate]         use this baud rate for configuring the device"     # override baud
   puts "   [--save] [-s]                             write new configuration to XBee flash when finished; default is: configuration is not flashed"
   puts "   [--help] print this command help message"
 
   puts "\nSee conf/xbeeconfig.rb for defaults and edit conf/xbeeconfig.rb to change the defaults used to communicate with the device"
   puts "\nCopyright (C) 2008-2009 360VL, Inc and Landon Cox"
-  puts "\nThis program comes with ABSOLUTELY NO WARRANTY;" 
+  puts "\nThis program comes with ABSOLUTELY NO WARRANTY;"
   puts "This is free software, and you are welcome to redistribute it"
-  puts "under certain conditions detailed in: GNU Affero General Public License version 3" 
+  puts "under certain conditions detailed in: GNU Affero General Public License version 3"
 
 end
 
@@ -119,16 +119,16 @@ def setup_cli_options
 
   @options_array = Array.new
 
-  @options_array << [ "--panid", "-p", GetoptLong::REQUIRED_ARGUMENT ]    # set panid 
-  @options_array << [ "--nodeid", "-n", GetoptLong::REQUIRED_ARGUMENT ]   # set nodeid 
+  @options_array << [ "--panid", "-p", GetoptLong::REQUIRED_ARGUMENT ]    # set panid
+  @options_array << [ "--nodeid", "-n", GetoptLong::REQUIRED_ARGUMENT ]   # set nodeid
   @options_array << [ "--desthigh", "-H", GetoptLong::REQUIRED_ARGUMENT ] # set destination high address
-  @options_array << [ "--destlow", "-L", GetoptLong::REQUIRED_ARGUMENT ]  # set destination low address 
-  @options_array << [ "--channel", "-c", GetoptLong::REQUIRED_ARGUMENT ]  # set channel 
+  @options_array << [ "--destlow", "-L", GetoptLong::REQUIRED_ARGUMENT ]  # set destination low address
+  @options_array << [ "--channel", "-c", GetoptLong::REQUIRED_ARGUMENT ]  # set channel
   @options_array << [ "--parity", "-P", GetoptLong::REQUIRED_ARGUMENT ]   # set parity
-  @options_array << [ "--newbaud", "-B", GetoptLong::REQUIRED_ARGUMENT ]  # set new baud rate in XBee, will not take effect until exiting command mode or AT command mode timeout 
-  @options_array << [ "--mysrc", "-M", GetoptLong::REQUIRED_ARGUMENT ]    # set nodeid 
+  @options_array << [ "--newbaud", "-B", GetoptLong::REQUIRED_ARGUMENT ]  # set new baud rate in XBee, will not take effect until exiting command mode or AT command mode timeout
+  @options_array << [ "--mysrc", "-M", GetoptLong::REQUIRED_ARGUMENT ]    # set nodeid
 
-  @options_array << [ "--dev", "-d", GetoptLong::REQUIRED_ARGUMENT ]      # override serial /dev string 
+  @options_array << [ "--dev", "-d", GetoptLong::REQUIRED_ARGUMENT ]      # override serial /dev string
   @options_array << [ "--baud", "-b", GetoptLong::REQUIRED_ARGUMENT ]     # use this baud to configure device
   @options_array << [ "--save", "-s", GetoptLong::NO_ARGUMENT ]           # write new configuration to XBee flash when finished
   @options_array << [ "--help", "-h", GetoptLong::NO_ARGUMENT ]           # help message
@@ -147,7 +147,7 @@ def process_cli_options
       case opt
 
       when "--panid"
-        @panid = arg 
+        @panid = arg
 
       when "--nodeid"
         @nodeid = arg
@@ -192,17 +192,17 @@ def process_cli_options
 end
 
 =begin rdoc
-  after the cli options have been processed, the configuration is executed 
+  after the cli options have been processed, the configuration is executed
 =end
 def execute_configuration
-  # start the configuration 
+  # start the configuration
 
-  @xbee = XBee::V1.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
+  @xbee = XBee.new( @xbee_usbdev_str, @xbee_baud, @data_bits, @stop_bits, @parity )
 
   # before doing anything else, put XBee into AT command mode
 
   puts "Attention..."
-  if !@xbee.attention.match("OK") 
+  if !@xbee.attention.match("OK")
      puts "Can't talk to XBee.  Please check your connection or configuration: #{res}"
      exit 1
   end
@@ -225,13 +225,13 @@ def execute_configuration
     @xbee.node_id!(@nodeid)
   end
 
-  if @dest_high && @dest_low  
+  if @dest_high && @dest_low
     puts "Setting destination address"
     @xbee.destination_high!(@dest_high)
     @xbee.destination_low!(@dest_low)
   end
 
-  if @channel 
+  if @channel
     puts "Setting channel"
     @xbee.channel!(@channel)
     puts "Channel: #{@xbee.channel}"
@@ -247,7 +247,7 @@ def execute_configuration
     @xbee.parity!( @newparity.upcase.to_sym )
   end
 
-  if @save 
+  if @save
     puts "Saving configuration to XBee flash"
     @xbee.save!
   end
