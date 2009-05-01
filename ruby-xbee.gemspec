@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby-xbee}
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Ashmore"]
@@ -28,8 +28,20 @@ Gem::Specification.new do |s|
     "bin/xbeelisten.rb",
     "bin/xbeesend.rb",
     "lib/apimode/at_commands.rb",
+    "lib/apimode/frame/at_command.rb",
+    "lib/apimode/frame/at_command_response.rb",
+    "lib/apimode/frame/explicit_addressing_command.rb",
+    "lib/apimode/frame/explicit_rx_indicator.rb",
+    "lib/apimode/frame/frame.rb",
+    "lib/apimode/frame/modem_status.rb",
+    "lib/apimode/frame/receive_packet.rb",
+    "lib/apimode/frame/remote_command_request.rb",
+    "lib/apimode/frame/remote_command_response.rb",
+    "lib/apimode/frame/transmit_request.rb",
+    "lib/apimode/frame/transmit_status.rb",
     "lib/apimode/xbee_api.rb",
     "lib/legacy/command_mode.rb",
+    "lib/module_config.rb",
     "lib/ruby_xbee.rb",
     "test/ruby_xbee_test.rb",
     "test/test_helper.rb"
