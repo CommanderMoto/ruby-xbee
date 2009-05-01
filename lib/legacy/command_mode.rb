@@ -1,19 +1,21 @@
 module XBee
   class BaseCommandModeInterface < RFModule
-=begin rdoc
-  initializes the communication link with the XBee device.  These parameters must match those which
-  are configured in the XBee in order to establish communication.
 
-  xbee_usbdev_str is a path to the device used to communicate with the XBee.  Typically it may
-  look like:  /dev/tty.usbserial-A80081sF if you're using a USB to serial converter or a device such
-  as http://www.sparkfun.com/commerce/product_info.php?products_id=8687
-=end
+    VERSION = "1.0" # Version of this class
+
+    ##
+    # initializes the communication link with the XBee device.  These parameters must match those which
+    # are configured in the XBee in order to establish communication.
+
+    # xbee_usbdev_str is a path to the device used to communicate with the XBee.  Typically it may
+    # look like:  /dev/tty.usbserial-A80081sF if you're using a USB to serial converter or a device such
+    # as http://www.sparkfun.com/commerce/product_info.php?products_id=8687
     def initialize( xbee_usbdev_str, baud, data_bits, stop_bits, parity )
       # open serial port device to XBee
       @xbee_serialport = SerialPort.new( xbee_usbdev_str, baud.to_i, data_bits.to_i, stop_bits.to_i, parity )
-      @xbee_serialport.read_timeout = TYPICAL_READ_TIMEOUT
+      @xbee_serialport.read_timeout = self.read_timeout(:short)
       @baudcodes = { 1200 => 0, 2400 => 1, 4800 => 2, 9600 => 3, 19200 => 4, 38400 => 5, 57600 => 6, 115200 => 7 }
-      @paritycodes = { :None => 0, :Even => 1, :Odd => 2, :Mark => 3, :Space => 4 }      
+      @paritycodes = { :None => 0, :Even => 1, :Odd => 2, :Mark => 3, :Space => 4 }
       @iotypes = { :Disabled => 0, :ADC => 2, :DI => 3, :DO_Low => 4, :DO_High => 5,
                    :Associated_Indicator => 1, :RTS => 1, :CTS => 1, :RS485_Low => 6, :RS485_High => 7 }
     end
@@ -66,7 +68,7 @@ module XBee
     def neighbors
       # neighbors often takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
       @xbee_serialport.write("ATND\r")
       response = getresponse
 
@@ -189,7 +191,7 @@ module XBee
     def channel
       # channel often takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
       @xbee_serialport.write("ATCH\r")
       response = getresponse
       @xbee_serialport.read_timeout = tmp
@@ -202,7 +204,7 @@ module XBee
     def channel!(new_channel)
       # channel takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
       @xbee_serialport.write("ATCH#{new_channel}\r")
       response = getresponse
       @xbee_serialport.read_timeout = tmp
@@ -215,7 +217,7 @@ module XBee
 =end
     def node_id
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
       @xbee_serialport.write("ATNI\r")
       response = getresponse
       @xbee_serialport.read_timeout = tmp
@@ -233,7 +235,7 @@ module XBee
 =end
     def node_id!(new_id)
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
       @xbee_serialport.write("ATNI#{new_id}\r")
       response = getresponse
       @xbee_serialport.read_timeout = tmp
@@ -444,7 +446,7 @@ module XBee
     def io_input
 
       tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = LONG_READ_TIMEOUT
+      @xbee_serialport.read_timeout = read_timeout(:long)
 
       @xbee_serialport.write("ATIS\r")
       response = getresponse

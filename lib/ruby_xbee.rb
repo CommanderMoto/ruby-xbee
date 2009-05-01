@@ -31,32 +31,23 @@
 require 'date'
 require 'pp'
 
-begin
-  gem 'ruby-serialport'
-  require 'serialport'
-  STDIN.sync = 1
-  STDOUT.sync = 1
-  $stdin.sync = true
-  $stdout.sync = true
-rescue LoadError => e
-  puts "LoadError?! => #{e}"
-  if require 'rubygems'
-    puts "Okay, required rubygems. retrying now ..."
-    retry
-  end
-end
+require 'rubygems'
+gem 'ruby-serialport'
+require 'serialport'
+
+require 'module_config'
+require 'apimode/xbee_api'
 
 module XBee
   ##
-  # Accessor for the factory below (to preserve legacy API)
+  # supports legacy API, command-mode interface
   def XBee.new( xbee_usbdev_str, baud, data_bits, stop_bits, parity )
-    uart_config = XBeeUARTConfig.new(baud, data_bits, parity, stop_bits)
-    RFModule.factory(xbee_usbdev_str, uart_config)
+    require 'legacy/command_mode'
+    BaseCommandModeInterface.new(xbee_usbdev_str, baud, data_bits, stop_bits, parity)
   end
 
   ##
   # a method for getting results from any Ruby SerialPort object. Not ideal, but seems effective enough.
-
   def getresults( sp, echo = true )
     results = ""
     while (c = sp.getc) do
@@ -70,53 +61,60 @@ module XBee
     results.gsub!( "\r", "\n")
   end
 
-  ##
-  # A class for encapsulating UART communication parameters
-
-  class XBeeUARTConfig
-    attr_accessor :baud, :data_bits, :parity, :stop_bits
-
-    def initialize(baud = 9600, data_bits = 8, parity = 0, stop_bits = 1)
-      self.baud = Integer(baud)
-      self.data_bits = Integer(data_bits)
-      self.parity = Integer(parity)
-      self.stop_bits = Integer(stop_bits)
-    end
-  end
 
   ##
   # This is it, the base class where it all starts. Command mode or API mode, version 1 or version 2, all XBees descend
   # from this class.
   class RFModule
     include XBee
-    attr_accessor :xbee_serialport, :xbee_uart_config
+    include Config
+    attr_accessor :xbee_serialport, :xbee_uart_config, :guard_time, :command_mode_timeout, :command_character, :node_discover_timeout, :node_identifier
+    attr_reader :serial_number, :hardware_rev, :firmware_rev
 
-    # XBee response times vary based on both hardware and firmware versions.  These
-    # constants may need to be adjusted for your devices, but these will
-    # work fine for most cases.  The unit of time for a timeout constant is ms
 
-    TYPICAL_READ_TIMEOUT = 1200
-    LONG_READ_TIMEOUT    = 3000
-
-    VERSION = "1.0"                 # version of this class
+    def version
+      "2.0"
+    end
 
     ##
     # This is the way we instantiate XBee modules now, via this factory method. It will ultimately autodetect what
     # flavor of XBee module we're using and return the most appropriate subclass to control that module.
+    def initialize(xbee_usbdev_str = "/dev/tty.usbserial-A7004nmf", uart_config = XBeeUARTConfig.new)
+      unless uart_config.kind_of?(XBeeUARTConfig)
+        raise "uart_config must be an instance of XBeeUARTConfig for this to work"
+      end
+      self.xbee_uart_config = uart_config
+      @xbee_serialport = SerialPort.new( xbee_usbdev_str, uart_config.baud, uart_config.data_bits, uart_config.stop_bits, uart_config.parity )
+      @xbee_serialport.read_timeout = self.read_timeout(:short)
+      @guard_time = GuardTime.new
+      @command_mode_timeout= CommandModeTimeout.new
+      @command_character = CommandCharacter.new
+      @node_discover_timeout = NodeDiscoverTimeout.new
+      @node_identifier = NodeIdentifier.new
+    end
 
-    def RFModule.factory(xbee_usbdev_str = "/dev/tty.usbserial-A7004nmf", uart_config = XBeeUARTConfig.new)
-      xbee_uart_config = uart_config.kind_of?(XBeeUARTConfig) ? uart_config : XBeeUARTConfig.new
-      require 'legacy/command_mode'
-      BaseCommandModeInterface.new(xbee_usbdev_str,
-              xbee_uart_config.baud,
-              xbee_uart_config.data_bits,
-              xbee_uart_config.stop_bits,
-              xbee_uart_config.parity)
+    def in_command_mode
+      sleep self.guard_time.in_seconds
+      @xbee_serialport.write(self.command_character.value * 3)
+      sleep self.guard_time.in_seconds
+      @xbee_serialport.read(3)
+      # actually do some work now ...
+      yield if block_given?
+      # Exit command mode
+      @xbee_serialport.write("ATCN\r")
+      @xbee_serialport.read(3)
+    end
+
+    ##
+    # XBee response times vary based on both hardware and firmware versions. These
+    # constants may need to be adjusted for your devices, but these will
+    # work fine for most cases.  The unit of time for a timeout constant is ms
+    def read_timeout(type = :short)
+      case type
+        when :short : 1200
+        when :long : 3000
+        else 3000
+      end
     end
   end
 end  # module XBee
-
-=begin rdoc
-  reads lines from a given serial port object until there are no more lines left to read (timesout with @xbee.serial_timeout value)
-=end
-

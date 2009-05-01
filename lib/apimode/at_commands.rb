@@ -25,3 +25,4 @@ module XBee
     AP_PARAM_DESCRIPTOR = ParameterDescriptor.new
     AP = CommandDescriptor.new("AP","API Mode","0 = off; 1 = on, unescaped; 2 = on, escaped", AP_PARAM_DESCRIPTOR)
   end
+end
