@@ -1,11 +1,9 @@
-require 'frame'
-
 module XBee
   module Frame
     class ATCommand < Base
       def api_identifier ; 0x08 ; end
 
-      attr_accessor :frame_id, :at_command, :parameter_value, :parameter_pack_string
+      attr_accessor :at_command, :parameter_value, :parameter_pack_string
 
       def initialize(at_command, frame_id = nil, parameter_value = nil, parameter_pack_string = "a*")
         self.frame_id = frame_id

@@ -6,7 +6,7 @@ module XBee
   class BaseAPIModeInterface < RFModule
     def initialize(xbee_usbdev_str, uart_config = XBeeUARTConfig.new)
       super(xbee_usbdev_str, uart_config)
-      @frame_id = 0
+      @frame_id = 1
       start_apimode_communication
     end
 
@@ -24,6 +24,8 @@ module XBee
         self.xbee_serialport.write("ATAP2\r")
         self.xbee_serialport.read(3)
       end
+      #@frames ||= []
+      #@read_thread = Thread.new {  loop {  @frames << XBee::Frame.new(self.xbee_serialport) } rescue retry }
     end
 
     def get_param(at_param_name, at_param_unpack_string = nil)
@@ -36,7 +38,58 @@ module XBee
         if block_given?
           yield r
         else
-          r.retrieved_value
+          at_param_unpack_string.nil? ? r.retrieved_value : r.retrieved_value.unpack(at_param_unpack_string).first
+        end
+      else
+        raise "Response did not indicate successful retrieval of that parameter: #{r.inspect}"
+      end
+    end
+
+    def set_param(at_param_name, param_value, at_param_unpack_string = nil)
+      frame_id = self.next_frame_id
+      at_command_frame = XBee::Frame::ATCommand.new(at_param_name,frame_id,param_value,at_param_unpack_string)
+      # puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
+      self.xbee_serialport.write(at_command_frame._dump)
+      r = XBee::Frame.new(self.xbee_serialport)
+      if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
+        if block_given?
+          yield r
+        else
+          at_param_unpack_string.nil? ? r.retrieved_value : r.retrieved_value.unpack(at_param_unpack_string).first
+        end
+      else
+        raise "Response did not indicate successful retrieval of that parameter: #{r.inspect}"
+      end
+    end
+
+    def get_remote_param(at_param_name, remote_address = 0x000000000000ffff, remote_network_address = 0xfffe, at_param_unpack_string = nil)
+      frame_id = self.next_frame_id
+      at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, nil, at_param_unpack_string)
+      puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
+      self.xbee_serialport.write(at_command_frame._dump)
+      r = XBee::Frame.new(self.xbee_serialport)
+      if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
+        if block_given?
+          yield r
+        else
+          at_param_unpack_string.nil? ? r.retrieved_value : r.retrieved_value.unpack(at_param_unpack_string).first
+        end
+      else
+        raise "Response did not indicate successful retrieval of that parameter: #{r.inspect}"
+      end
+    end
+
+    def set_remote_param(at_param_name, param_value, remote_address = 0x000000000000ffff, remote_network_address = 0xfffe, at_param_unpack_string = nil)
+      frame_id = self.next_frame_id
+      at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, param_value, at_param_unpack_string)
+      puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
+      self.xbee_serialport.write(at_command_frame._dump)
+      r = XBee::Frame.new(self.xbee_serialport)
+      if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
+        if block_given?
+          yield r
+        else
+          at_param_unpack_string.nil? ? r.retrieved_value : r.retrieved_value.unpack(at_param_unpack_string).first
         end
       else
         raise "Response did not indicate successful retrieval of that parameter: #{r.inspect}"
@@ -44,21 +97,21 @@ module XBee
     end
 
     def version_long
-      @version_long ||= get_param("VL")
+      @version_long ||= get_param("VL","a*")
     end
 
 =begin rdoc
   Retrieve XBee firmware version
 =end
     def fw_rev
-      @fw_rev ||= get_param("VR").unpack("n")
+      @fw_rev ||= get_param("VR","n")
     end
 
 =begin rdoc
   Retrieve XBee hardware version
 =end
     def hw_rev
-      @hw_rev ||= get_param("HV").unpack("n")
+      @hw_rev ||= get_param("HV","n")
     end
 
     ##
@@ -140,31 +193,29 @@ module XBee
   sets the high portion of the XBee device's current destination address
 =end
     def destination_high!(high_addr)
-      @xbee_serialport.write("ATDH#{high_addr}\r")
+      self.xbee_serialport.write("ATDH#{high_addr}\r")
       getresponse
     end
 
-=begin rdoc
-  returns the low portion of the XBee device's serial number. this value is factory set.
-=end
+    ##
+    # returns the low portion of the XBee device's serial number. this value is factory set.
     def serial_num_low
-      @serial_low ||= get_param("SL").unpack("N")
+      @serial_low ||= get_param("SL","N")
     end
 
-=begin rdoc
-  returns the high portion of the XBee devices serial number. this value is factory set.
-=end
+    ##
+    # returns the high portion of the XBee device's serial number. this value is factory set.
     def serial_num_high
-      @serial_high ||= get_param("SH").unpack("N")
+      @serial_high ||= get_param("SH","N")
     end
 
     def serial_num
-      (self.serial_num_high << 32) | self.serial_num_low
+      self.serial_num_high() << 32 | self.serial_num_low
     end
-=begin rdoc
-  returns the channel number of the XBee device.  this value, along with the PAN ID,
-  and MY address determines the addressability of the device and what it can listen to
-=end
+
+    ##
+    # returns the channel number of the XBee device.  this value, along with the PAN ID,
+    # and MY address determines the addressability of the device and what it can listen to
     def channel
       # channel often takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
@@ -175,9 +226,8 @@ module XBee
       response.strip.chomp
     end
 
-=begin rdoc
-  sets the channel number of the device.  The valid channel numbers are those of the 802.15.4 standard.
-=end
+    ##
+    # sets the channel number of the device.  The valid channel numbers are those of the 802.15.4 standard.
     def channel!(new_channel)
       # channel takes more than 1000ms to return data
       tmp = @xbee_serialport.read_timeout
@@ -188,10 +238,9 @@ module XBee
       response.strip.chomp
     end
 
-=begin rdoc
-  returns the node ID of the device.  Node ID is typically a human-meaningful name
-  to give to the XBee device, much like a hostname.
-=end
+    ##
+    # returns the node ID of the device.  Node ID is typically a human-meaningful name
+    # to give to the XBee device, much like a hostname.
     def node_id
       @node_id ||= get_param("NI")
       #tmp = @xbee_serialport.read_timeout
@@ -206,11 +255,10 @@ module XBee
       #end
     end
 
-=begin rdoc
-  sets the node ID to a user-definable text string to make it easier to
-  identify the device with "human" names.  This node id is reported to
-  neighboring XBees so consider it "public".
-=end
+    ##
+    # sets the node ID to a user-definable text string to make it easier to
+    # identify the device with "human" names.  This node id is reported to
+    # neighboring XBees so consider it "public".
     def node_id!(new_id)
       tmp = @xbee_serialport.read_timeout
       @xbee_serialport.read_timeout = read_timeout(:long)
@@ -223,42 +271,39 @@ module XBee
         response.strip.chomp
       end
     end
-=begin rdoc
-  returns the PAN ID of the device.  PAN ID is one of the 3 main identifiers used to
-  communicate with the device from other XBees.  All XBees which are meant to communicate
-  must have the same PAN ID and channel number.  The 3rd identifier is the address of the
-  device itself represented by its serial number (High and Low) and/or it's 16-bit MY
-  source address.
-=end
+
+    ##
+    # returns the PAN ID of the device.  PAN ID is one of the 3 main identifiers used to
+    # communicate with the device from other XBees.  All XBees which are meant to communicate
+    # must have the same PAN ID and channel number.  The 3rd identifier is the address of the
+    # device itself represented by its serial number (High and Low) and/or it's 16-bit MY
+    # source address.
     def pan_id
       @pan_id ||= get_param("ID").unpack("n")
     end
 
-=begin rdoc
-  sets the PAN ID of the device.  Modules must have the same PAN ID in order to communicate
-  with each other.  The PAN ID value can range from 0 - 0xffff.  The default from the factory
-  is set to 0x3332.
-=end
+    ##
+    # sets the PAN ID of the device.  Modules must have the same PAN ID in order to communicate
+    # with each other.  The PAN ID value can range from 0 - 0xffff.  The default from the factory
+    # is set to 0x3332.
     def pan_id!(new_id)
       @xbee_serialport.write("ATID#{new_id}\r")
       getresponse
     end
 
-=begin rdoc
-  returns the signal strength in dBm units of the last received packet.  Expect a negative integer
-  or 0 to be returned.  If the XBee device has not received any neighboring packet data, the signal strength
-  value will be 0
-=end
+    ##
+    # returns the signal strength in dBm units of the last received packet.  Expect a negative integer
+    # or 0 to be returned.  If the XBee device has not received any neighboring packet data, the signal strength
+    # value will be 0
     def received_signal_strength
       -(get_param("DB").hex)
     end
 
-=begin rdoc
-  retrieves the baud rate of the device.  Generally, this will be the same as the
-  rate you're currently using to talk to the device unless you've changed the device's
-  baud rate and are still in the AT command mode and/or have not exited command mode explicitly for
-  the new baud rate to take effect.
-=end
+    ##
+    # retrieves the baud rate of the device.  Generally, this will be the same as the
+    # rate you're currently using to talk to the device unless you've changed the device's
+    # baud rate and are still in the AT command mode and/or have not exited command mode explicitly for
+    # the new baud rate to take effect.
     def baud
       @xbee_serialport.write("ATBD\r")
       baudcode = getresponse

@@ -23,7 +23,7 @@ module XBee
       end
       puts "Got some stray bytes for ya: #{stray_bytes.map {|b| "0x%x" % b} .join(", ")}" unless stray_bytes.empty?
       header = source_io.read(3).xb_unescape
-      # puts "Read header: #{header.unpack("C*").join(", ")}"
+      puts "Read header: #{header.unpack("C*").join(", ")}"
       frame_remaining = frame_length = api_identifier = cmd_data = ""
       if header.length == 3
         frame_length, api_identifier = header.unpack("nC")
@@ -51,7 +51,7 @@ module XBee
     end
 
     class Base
-      attr_accessor :api_identifier, :cmd_data
+      attr_accessor :api_identifier, :cmd_data, :frame_id
 
       def api_identifier ; @api_identifier ||= 0x00 ; end
 

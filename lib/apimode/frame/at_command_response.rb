@@ -1,5 +1,3 @@
-require 'frame'
-
 module XBee
   module Frame
     class ATCommandResponse < ReceivedFrame
