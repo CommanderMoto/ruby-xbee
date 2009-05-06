@@ -24,8 +24,14 @@ module XBee
         self.xbee_serialport.write("ATAP2\r")
         self.xbee_serialport.read(3)
       end
-      #@frames ||= []
-      #@read_thread = Thread.new {  loop {  @frames << XBee::Frame.new(self.xbee_serialport) } rescue retry }
+      @frames ||= []
+      @read_thread = Thread.new do
+        begin
+        loop {  @frames << XBee::Frame.new(self.xbee_serialport) }
+        rescue
+          retry
+        end
+      end
     end
 
     def get_param(at_param_name, at_param_unpack_string = nil)
@@ -33,7 +39,10 @@ module XBee
       at_command_frame = XBee::Frame::ATCommand.new(at_param_name,frame_id,nil,at_param_unpack_string)
       # puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      while (@frames.empty?)
+        sleep 0.1
+      end
+      r = @frames.shift
       if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -50,7 +59,10 @@ module XBee
       at_command_frame = XBee::Frame::ATCommand.new(at_param_name,frame_id,param_value,at_param_unpack_string)
       # puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      while (@frames.empty?)
+        sleep 0.1
+      end
+      r = @frames.shift
       if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -67,7 +79,10 @@ module XBee
       at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, nil, at_param_unpack_string)
       puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      while (@frames.empty?)
+        sleep 0.1
+      end
+      r = @frames.shift
       if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -84,7 +99,10 @@ module XBee
       at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, param_value, at_param_unpack_string)
       puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      while (@frames.empty?)
+        sleep 0.1
+      end
+      r = @frames.shift
       if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -137,7 +155,10 @@ module XBee
       #read_thread = Thread.new do
       begin
         loop do
-          r = XBee::Frame.new(self.xbee_serialport)
+          while (@frames.empty?)
+            sleep 0.1
+          end
+          r = @frames.shift
           # puts "Got a response! Frame ID: #{r.frame_id}, Command: #{r.at_command}, Status: #{r.status}, Value: #{r.retrieved_value}"
           if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
             if r.retrieved_value.empty?
