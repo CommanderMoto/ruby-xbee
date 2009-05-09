@@ -2,10 +2,10 @@ $: << File.dirname(__FILE__)
 
 class String
   def xb_escape
-    self.gsub(/[\176\175\021\023]/) { |c| [0x7D, c[0] ^ 0x20].pack("CC")}
+    self.gsub(/[\x7D\x7E\x11\x13]/) { |c| [0x7D, c[0] ^ 0x20].pack("CC")}
   end
   def xb_unescape
-    self.gsub(/\175./) { |ec| [ec.unpack("CC").last ^ 0x20].pack("C")}
+    self.gsub(/[\x7D](.)/) { |ec| [ec[1] ^ 0x20].pack("C")}
   end
 end
 
@@ -23,16 +23,18 @@ module XBee
       end
       puts "Got some stray bytes for ya: #{stray_bytes.map {|b| "0x%x" % b} .join(", ")}" unless stray_bytes.empty?
       header = source_io.read(3).xb_unescape
-      puts "Read header: #{header.unpack("C*").join(", ")}"
+      puts "Read header: #{(header.unpack("C*").map{|c| "%02x" % c }).join(", ")}"
       frame_remaining = frame_length = api_identifier = cmd_data = ""
       if header.length == 3
         frame_length, api_identifier = header.unpack("nC")
       else
+        print "... and that header was escaped! reading one more char to get api_identifier ..."
         frame_length, api_identifier = header.unpack("n").first, source_io.readchar
+        puts " annnnnnd got it: 0x%02x" % api_identifier
       end
       cmd_data_intended_length = frame_length - 1
       while ((unescaped_length = cmd_data.xb_unescape.length) < cmd_data_intended_length)
-        cmd_data += source_io.read(cmd_data_intended_length - unescaped_length)
+        cmd_data += String(source_io.read(cmd_data_intended_length - unescaped_length))
       end
       data = api_identifier.chr + cmd_data.xb_unescape
       sent_checksum = source_io.getc
@@ -73,7 +75,7 @@ module XBee
       def initialize(frame_data)
         raise "Frame data must be an enumerable type" unless frame_data.kind_of?(Enumerable)
         self.api_identifier = frame_data[0]
-        # puts "Initializing a ReceivedFrame of type 0x%x" % self.api_identifier
+        #puts "Initializing a ReceivedFrame of type 0x%x" % self.api_identifier
         self.cmd_data = frame_data[1..-1]
       end
     end

@@ -7,11 +7,16 @@ module XBee
     def initialize(xbee_usbdev_str, uart_config = XBeeUARTConfig.new)
       super(xbee_usbdev_str, uart_config)
       @frame_id = 1
+      @threaded_mode = false
       start_apimode_communication
     end
 
     def next_frame_id
-      @frame_id += 1
+      if @frame_id >= 255
+        @frame_id = 1
+      else
+        @frame_id += 1
+      end
     end
 
     def start_apimode_communication
@@ -24,8 +29,18 @@ module XBee
         self.xbee_serialport.write("ATAP2\r")
         self.xbee_serialport.read(3)
       end
-      #@frames ||= []
-      #@read_thread = Thread.new {  loop {  @frames << XBee::Frame.new(self.xbee_serialport) } rescue retry }
+      self.xbee_serialport.read_timeout = 0
+      if @threaded_mode
+        @frames ||= []
+        @read_thread = Thread.new do
+          begin
+            loop {  @frames << XBee::Frame.new(self.xbee_serialport) }
+          rescue
+            retry
+          end
+        end
+      end
+      set_param("MR",5,"C")
     end
 
     def get_param(at_param_name, at_param_unpack_string = nil)
@@ -33,7 +48,7 @@ module XBee
       at_command_frame = XBee::Frame::ATCommand.new(at_param_name,frame_id,nil,at_param_unpack_string)
       # puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      r = get_next_frame
       if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -50,7 +65,7 @@ module XBee
       at_command_frame = XBee::Frame::ATCommand.new(at_param_name,frame_id,param_value,at_param_unpack_string)
       # puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      r = get_next_frame
       if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -65,9 +80,9 @@ module XBee
     def get_remote_param(at_param_name, remote_address = 0x000000000000ffff, remote_network_address = 0xfffe, at_param_unpack_string = nil)
       frame_id = self.next_frame_id
       at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, nil, at_param_unpack_string)
-      puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
+      #puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      r = get_next_frame
       if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -79,12 +94,25 @@ module XBee
       end
     end
 
+    def get_next_frame
+      if @threaded_mode
+        while (@frames.empty?)
+          @read_thread.run
+          Thread.pass
+          sleep 0.1
+        end
+        @frames.shift
+      else
+        XBee::Frame.new(self.xbee_serialport)
+      end
+    end
+
     def set_remote_param(at_param_name, param_value, remote_address = 0x000000000000ffff, remote_network_address = 0xfffe, at_param_unpack_string = nil)
       frame_id = self.next_frame_id
       at_command_frame = XBee::Frame::RemoteCommandRequest.new(at_param_name, remote_address, remote_network_address, frame_id, param_value, at_param_unpack_string)
-      puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
+      #puts "Sending ... [#{at_command_frame._dump.unpack("C*").join(", ")}]"
       self.xbee_serialport.write(at_command_frame._dump)
-      r = XBee::Frame.new(self.xbee_serialport)
+      r = get_next_frame
       if r.kind_of?(XBee::Frame::RemoteCommandResponse) && r.status == :OK && r.frame_id == frame_id
         if block_given?
           yield r
@@ -127,19 +155,15 @@ module XBee
     # Signal strength (:DB) is reported in units of -dBM.
     def neighbors
       frame_id = self.next_frame_id
-      # neighbors often takes more than 1000ms to return data
       node_discover_cmd = XBee::Frame::ATCommand.new("ND",frame_id,nil)
       #puts "Node discover command dump: #{node_discover_cmd._dump.unpack("C*").join(", ")}"
-      tmp = @xbee_serialport.read_timeout
-      @xbee_serialport.read_timeout = Integer(self.node_discover_timeout.in_seconds * 1050)
-      @xbee_serialport.write(node_discover_cmd._dump)
+      self.xbee_serialport.write(node_discover_cmd._dump)
       responses = []
-      #read_thread = Thread.new do
       begin
         loop do
-          r = XBee::Frame.new(self.xbee_serialport)
+          r = get_next_frame
           # puts "Got a response! Frame ID: #{r.frame_id}, Command: #{r.at_command}, Status: #{r.status}, Value: #{r.retrieved_value}"
-          if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.frame_id == frame_id
+          if r.kind_of?(XBee::Frame::ATCommandResponse) && r.status == :OK && r.at_command == "ND"
             if r.retrieved_value.empty?
               # w00t - the module is telling us it's done with the discovery process.
               break
@@ -147,15 +171,12 @@ module XBee
             responses << r
             end
           else
-            raise "Unexpected response to ATND command: #{r.inspect}"
+            #raise "Unexpected response to ATND command, frame id #{frame_id}: #{r.inspect}"
           end
         end
       rescue Exception => e
         puts "Okay, must have finally timed out on the serial read: #{e}."
       end
-      #end
-      @xbee_serialport.read_timeout = tmp
-      #read_thread.join
       responses.map do |r|
         unpacked_fields = r.retrieved_value.unpack("nNNZxnCCnn")
         return_fields = [:SH, :SL, :NI, :PARENT_NETWORK_ADDRESS, :DEVICE_TYPE, :STATUS, :PROFILE_ID, :MANUFACTURER_ID]
@@ -210,7 +231,7 @@ module XBee
     end
 
     def serial_num
-      self.serial_num_high() << 32 | self.serial_num_low
+      concatenate_address(self.serial_num_high, self.serial_num_low)
     end
 
     ##

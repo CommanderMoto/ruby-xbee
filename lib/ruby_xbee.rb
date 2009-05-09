@@ -61,6 +61,11 @@ module XBee
     results.gsub!( "\r", "\n")
   end
 
+  ##
+  # a method for combining SH and SL to get a 64-bit value we can pass as an address ...
+  def concatenate_address(sh_val, sl_val)
+    ((sh_val & 0xFFFFFFFF) << 32) | (sl_val & 0xFFFFFFFF)
+  end
 
   ##
   # This is it, the base class where it all starts. Command mode or API mode, version 1 or version 2, all XBees descend
